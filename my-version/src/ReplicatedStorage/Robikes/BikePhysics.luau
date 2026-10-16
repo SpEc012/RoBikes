@@ -391,6 +391,10 @@ function BikePhysics:step(dt, input, ground)
 		-- rolling resistance (+ bulldozing in ruts / when digging) acts like a brake on the wheel [INF/DESIGN]
 		local rutD = (hit and compacting > 0) and self.ruts:depth(hit.point.X, hit.point.Z) or 0
 		local rollT = Tyre.rollingCoeff(wd.tyre) * res * N * R * (1 + bulldozing * (rutD / 0.05 + 0.5 * min(abs(ws.kappa), 1)))
+		if i == 2 and ws.kappa > Config.Roost.slip0 then
+			-- roost loss on a spinning rear tyre [DESIGN tuned to SPEC.md §4 MEAS slip per gear]
+			rollT += Config.Roost.k * bulldozing * (ws.kappa - Config.Roost.slip0) * N * R
+		end
 		local coulomb = brakeT + rollT
 
 		local w1, Fx

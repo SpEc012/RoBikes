@@ -39,6 +39,12 @@ print((require(game.ReplicatedStorage.Robikes.Tests).run()))
 print(require(game.ReplicatedStorage.Robikes.Tests).calibrate())   -- RoBikes vs the MX Bikes recording
 ```
 
+Outside Studio, with [Lune](https://github.com/lune-org/lune) installed (run from the `RoBikes` folder):
+
+```
+lune run tools/run_luau_tests.luau my-version/src/ReplicatedStorage/Robikes calibrate
+```
+
 ## Edit the code
 
 Source of truth is `src/` (Rojo-style layout). While developing, `node ../tools/serve_src.js src` serves it on
