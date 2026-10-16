@@ -475,6 +475,149 @@ case("M4 rear brake in the air dips the nose (wheel reaction torque)", function(
 	return ("pitch rate %.2f rad/s nose-down"):format(rate)
 end)
 
+---------------------------------------------------------------- handling aids and whips
+-- keyboard-like input: keys ramp the way BikeController smooths them (steer 3.5/s, throttle 6/s)
+local function keyboard(script)
+	local s = { thr = 0, steer = 0 }
+	return function(t)
+		local kThr, kSteer, extra = script(t)
+		local function ramp(cur, target, rate)
+			return cur + math.clamp(target - cur, -rate * DT, rate * DT)
+		end
+		s.thr = ramp(s.thr, kThr, 6)
+		s.steer = ramp(s.steer, kSteer, (math.abs(kSteer) > math.abs(s.steer)) and 3.5 or 6)
+		local i = input({ throttle = s.thr, steer = s.steer })
+		for k, v in pairs(extra or {}) do
+			i[k] = v
+		end
+		return i
+	end
+end
+
+case("aids: full keyboard steer held at 8 and 15 m/s leans and turns without falling", function()
+	local out = {}
+	for _, v in ipairs({ 8, 15 }) do
+		local sim = newBike("450xf", { assists = { balanceAssist = 0.6 } })
+		local g = flatGround()
+		upToSpeed(sim, v, g)
+		local maxRoll = 0
+		run(sim, 4, keyboard(function()
+			return 0.3, 1
+		end), g, function(s)
+			maxRoll = math.max(maxRoll, math.abs(s.roll))
+		end)
+		assert(not sim.crashed, ("crashed at %d m/s (%s)"):format(v, tostring(sim.crashReason)))
+		assert(maxRoll > math.rad(15) and maxRoll < math.rad(40), ("max lean %.0f°"):format(math.deg(maxRoll)))
+		table.insert(out, ("%d m/s: lean %.0f°"):format(v, math.deg(maxRoll)))
+	end
+	return table.concat(out, ", ")
+end)
+
+case("aids: lean comes back upright after a steer tap at speed", function()
+	local sim = newBike("450xf", { assists = { balanceAssist = 0.6 } })
+	local g = flatGround()
+	upToSpeed(sim, 20, g)
+	run(sim, 4, keyboard(function(t)
+		return 0.4, (t < 0.3) and 1 or 0
+	end), g)
+	assert(not sim.crashed)
+	assert(math.abs(sim.roll) < math.rad(4), ("still leaning %.1f°"):format(math.deg(sim.roll)))
+	return ("lean %.1f° after 4 s"):format(math.deg(sim.roll))
+end)
+
+case("aids: parked and walking pace on an 8° hill with steer, the bike stays up", function()
+	local sim = newBike("350xf", { assists = { balanceAssist = 0.6 }, spawn = CFrame.Angles(math.rad(8), 0, 0) })
+	local n = Vector3.new(0, math.cos(math.rad(8)), math.sin(math.rad(8)))
+	local hill = function(o, d, len)
+		local dn = d:Dot(n)
+		if dn >= -1e-6 then
+			return nil
+		end
+		local t = -o:Dot(n) / dn
+		if t < 0 or t > len then
+			return nil
+		end
+		return t, n, "soil"
+	end
+	run(sim, 4, input({ throttle = 0.4, steer = 0.5 }), hill)
+	assert(not sim.crashed, tostring(sim.crashReason))
+	return ("%.1f m/s, lean %.0f°"):format(sim.vel.Magnitude, math.deg(sim.roll))
+end)
+
+case("aids: traction control keeps launch wheelspin under the slip target", function()
+	local function launch(tc)
+		local sim = newBike("450xf", { assists = { balanceAssist = 0.6, tractionControl = tc } })
+		local maxSlip = 0
+		run(sim, 2, input({ throttle = 1 }), flatGround(), function(s, t)
+			if t > 0.3 then
+				maxSlip = math.max(maxSlip, s.wheels[2].kappa)
+			end
+		end)
+		return maxSlip
+	end
+	local on, off = launch(true), launch(false)
+	assert(on < 0.2, ("slip with TC %.2f"):format(on))
+	assert(on <= off, "TC made it worse")
+	return ("max slip %.2f with TC, %.2f without"):format(on, off)
+end)
+
+case("aids: loop-out guard stops a full-throttle lean-back wheelie flipping over", function()
+	local sim = newBike("350xf", { assists = { balanceAssist = 0.6 } })
+	local maxPitch = 0
+	run(sim, 4, input({ throttle = 1, riderPitch = -1 }), flatGround(), function(s)
+		maxPitch = math.max(maxPitch, s.telemetry.pitch)
+	end)
+	assert(not sim.crashed, tostring(sim.crashReason))
+	assert(maxPitch < 75, ("pitch %.0f°"):format(maxPitch))
+	return ("max wheelie %.0f°"):format(maxPitch)
+end)
+
+local function jumpBike(assist)
+	local sim = newBike("450xf", { assists = { balanceAssist = assist } })
+	sim.pos = Vector3.new(0, 2.5, 0)
+	sim.vel = Vector3.new(0, 7, -16)
+	sim.prevVel = sim.vel
+	sim.wheels[1].omega, sim.wheels[2].omega = 50, 52
+	sim.rot = CFrame.Angles(math.rad(24), 0, 0)
+	return sim
+end
+
+case("whip: rider lean throws the bike sideways in the air, released it lands square", function()
+	local sim = jumpBike(0.6)
+	local maxYaw, landYaw, landed = 0, nil, false
+	run(sim, 3, function(t)
+		return input({ throttle = 0.3, riderLean = (t < 0.6) and 1 or 0 })
+	end, flatGround(), function(s)
+		if s.contacts == 0 then
+			maxYaw = math.max(maxYaw, s.airYaw)
+			landYaw = s.airYaw
+		elseif not landed and s.time > 0.3 then
+			landed = true
+		end
+	end)
+	assert(maxYaw > math.rad(50), ("whip only %.0f°"):format(math.deg(maxYaw)))
+	assert(landed and not sim.crashed, tostring(sim.crashReason))
+	assert(math.abs(landYaw) < math.rad(25), ("landed %.0f° crossed up"):format(math.deg(landYaw)))
+	return ("whip %.0f°, landed %.0f° off straight"):format(math.deg(maxYaw), math.deg(landYaw))
+end)
+
+case("whip: the nose stays up through a whip (no dive) and a whip held into the landing crashes", function()
+	local sim = jumpBike(0.6)
+	local minPitch = 90
+	run(sim, 1.4, function(t)
+		return input({ throttle = 0.3, riderLean = (t < 0.4) and -1 or ((t < 0.8) and 1 or 0) })
+	end, flatGround(), function(s)
+		if s.contacts == 0 then
+			minPitch = math.min(minPitch, s.telemetry.pitch)
+		end
+	end)
+	assert(minPitch > -15, ("nose dived to %.0f°"):format(minPitch))
+	local held = jumpBike(0.3)
+	run(held, 3, input({ throttle = 0.3, riderLean = 1 }), flatGround())
+	assert(held.crashed, "held whip landed sideways and rode away")
+	return ("lowest pitch %.0f°; held whip: %s"):format(minPitch, tostring(held.crashReason))
+end)
+
 ---------------------------------------------------------------- robustness
 case("large time step stays finite", function()
 	local sim = newBike("450xf")

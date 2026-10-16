@@ -85,6 +85,12 @@ function RiderRig.new(template, parent, heightStuds)
 			if IS_SEGMENT[seg] and not joint[seg] then
 				joint[seg] = (d.Part1.CFrame * d.C1).Position
 			end
+		elseif d:IsA("AnimationConstraint") and d.Attachment1 and d.Attachment1.Parent then
+			-- Studio's importer with Constraint Type "Joint Upgrade" rigs R15 with AnimationConstraints
+			local seg = string.gsub(d.Attachment1.Parent.Name, "_Geo$", "")
+			if IS_SEGMENT[seg] and not joint[seg] then
+				joint[seg] = d.Attachment1.WorldPosition
+			end
 		end
 	end
 	for _, n in ipairs(SEGMENTS) do
@@ -113,7 +119,8 @@ function RiderRig.new(template, parent, heightStuds)
 
 	-- strip everything that would fight the kinematic pose
 	for _, d in ipairs(model:GetDescendants()) do
-		if d:IsA("JointInstance") or d:IsA("Humanoid") or d:IsA("Script") or d:IsA("LocalScript") or d:IsA("Animator") then
+		if d:IsA("JointInstance") or d:IsA("Constraint") or d:IsA("Humanoid") or d:IsA("Script") or d:IsA("LocalScript")
+			or d:IsA("Animator") then
 			d:Destroy()
 		end
 	end
