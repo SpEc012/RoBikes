@@ -1,26 +1,60 @@
-# Rigged rider → playable / animated Roblox character
+# Rigged rider → Roblox (R15)
 
-Files (this folder): `rider_rigged.fbx` (+ `.glb`), `anim_walking.fbx`, `anim_running.fbx`, `anim_36.fbx`, `anim_92.fbx`.
-The rig is a generic humanoid skeleton (Meshy), not Roblox R15. Pick the route for what you need.
+**Use `rider_r15.fbx`.** It is the rider rebuilt as a Roblox R15 skinned character:
 
-## Route A — true R15 playable character (recommended for a walking Humanoid)
-The Meshy skeleton won't drive a Roblox `Humanoid` directly. Use Roblox's native setup:
-1. Studio → **Avatar** tab → **Avatar Setup / Auto-Setup**.
-2. Feed it the rider mesh (import `rider_rigged.fbx` first, or the un-rigged `rider_fullkit.glb`→FBX).
-3. Auto-Setup fits an **R15** cage + skeleton, so it works with `Humanoid`, the default `Animate` script and any Roblox animation. Now it's a drop-in player character or NPC.
+- Skeleton: `Root › HumanoidRootNode › LowerTorso › UpperTorso › Head`, arms `UpperArm › LowerArm › Hand`, legs
+  `UpperLeg › LowerLeg › Foot` (Left/Right), the names and hierarchy in Roblox's
+  [character specification](https://create.roblox.com/docs/art/characters/specifications).
+- Mesh split into the 15 body parts (`LowerTorso_Geo` … `RightFoot_Geo`), all skinned to that one skeleton, so the
+  joints bend smoothly instead of separating. Max 4 bone influences per vertex, nothing weighted to `Root`.
+- Facing +Z, Y up, transforms frozen, 1.8 m tall, texture embedded. 11,660 triangles total; the largest part
+  (Head with helmet) is 2,075.
+- `rider_r15_parts.png` shows the body-part split; `rider_r15_posed_test.png` is the mesh bent into a crouch to prove
+  the skinning holds.
 
-## Route B — use the Meshy rig + its clips directly (AnimationController)
-1. Studio → **3D Importer** → import `rider_rigged.fbx`. It comes in as a Model: a skinned MeshPart + bones + an `AnimationController`/`Animator`.
-2. Import `anim_walking.fbx` / `anim_running.fbx` / `anim_36.fbx` / `anim_92.fbx`; in the importer enable **Animations** → each becomes a `KeyframeSequence` you can **Save to Roblox** as an Animation asset (note its assetId).
-3. At runtime: `Animator:LoadAnimation(anim)` then `:Play()`.
+Other files here: `rider_r15.glb` (same rig, for viewers), `rider_r15.blend` (Blender source),
+`rider_rigged.*` and `anim_*.fbx` (the original Meshy rig and clips, which are **not** R15 and won't drive this rig).
+To rebuild after changing the mesh (`pip install bpy` first):
+`python3 tools/rig_rider_r15.py assets/models/rigged/rider_rigged.glb out` then
+`python3 tools/delogo_rider.py out/rider_r15.blend out/rider_r15_clean.blend`, and export the clean .blend to FBX.
 
-## For Robikes specifically (the rider sits on the bike)
-A motocross rider doesn't walk — it's posed on the bike and leans. Best use:
-- Pose `rider_rigged` in a **riding crouch** (rotate the arm/spine bones toward the bars), parent it to the bike chassis, and drive **lean** by rotating the spine/arms with `controls.lean` and `steer` from `BikePhysics`.
-- **Ragdoll on crash:** on `phys.crashed`, swap the rig to loose joints / physics so it tumbles off (mirrors the game's `detach_blend`).
-- Keep `walking/running` for a paddock or menu scene.
+## Put it on the bike (RoBikes)
+
+1. Studio → **Avatar** tab → **Import 3D** → pick `rider_r15.fbx`.
+2. In the importer: **Rig General › Rig Type = R15** (it should detect it), **Scale Unit = Meter**. The preview should
+   show a rider about 6 studs tall. Click **Import**.
+3. Rename the new model to **`RiderR15`** and drag it into **ReplicatedStorage** (directly in it, *not* inside the
+   `Robikes` folder, because the dev sync rebuilds that folder).
+4. Import the bike the same way (see `../bike/BIKE_TO_ROBLOX.md`) if you want the mesh bike too.
+5. Pull the code in as usual (`node tools/serve_src.js my-version/src`, then
+   `require(game.ServerStorage.RobikesDevSync)()`). This brings in the new `RiderRig` module and the updated
+   `BikeRenderer`.
+6. Press **Play**. Every bike, yours and other players', now has the rigged rider instead of the block rider.
+
+What the code does: `BikeRenderer` clones `RiderR15`, scales it to 1.8 m (6.3 studs), anchors it and poses it every
+frame. The hips sit on the seat, the body shifts with the existing rider-weight controls (arrow keys), the hands follow
+the handlebars through the steering, the boots stay on the pegs, and on a crash the whole rider tumbles as before.
+If `RiderR15` is missing, the old block rider is used, so nothing breaks.
+
+If the Output shows **"RiderR15 has no joint named …"**, the importer renamed a bone. Open the model, find the bone
+or part with the odd name, rename it to the R15 name the warning gives, and play again.
+
+Pose tuning lives in `BikeRenderer.luau` (`self.rigTargets`, `rigGrips`, `rigPegs`): `hips` moves the rider
+along the seat, `torsoLean` / `hipLean` set the attack position, `headUp` tilts the helmet up.
+
+## As a walking character (paddock, menus, NPCs)
+
+Because the rig is R15, Roblox's own animations drive it.
+
+- **Player character:** copy the imported model, name it `StarterCharacter`, put it in `StarterPlayer`. If Play
+  complains about a missing Humanoid or HumanoidRootPart, select the model and run **Avatar › Avatar Setup** on it
+  once; it adds the Humanoid, the attachments and the joints.
+- **NPC:** put the model in Workspace and play any R15 animation through its `Humanoid.Animator`.
 
 ## Notes
-- **FBX imports directly** into Studio (no conversion). The `.glb` versions still need FBX/OBJ.
-- **Scale:** rigged at 1.8 m → ~6.3 studs tall; resize to match the bike.
-- **⚠ Logo:** the rider texture still carries the stray Fox-style logo — re-skin after cleaning before shipping.
+
+- **Logo removed:** the stray Fox-style head on both boot shins is painted out (`rider_r15_boots_nologo.png`),
+  with `tools/delogo_rider.py`.
+- **Not yet tested inside Studio.** The rig was checked in Blender (names, hierarchy, weights, and skin deformation
+  after an FBX round-trip), and the pose code compiles with the Luau compiler, but it has not been imported into
+  Studio yet.
