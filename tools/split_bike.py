@@ -158,6 +158,15 @@ data = {
     'swingarmPivot': list(PIVOT), 'scale': k, 'tris': counts,
 }
 os.makedirs(out, exist_ok=True)
+# Studio's 3D importer rejects WebP textures (Trellis GLBs embed WebP): re-pack every image as PNG
+for im in bpy.data.images:
+    if im.size[0] == 0:
+        continue
+    p = os.path.join(out, im.name + '.png')
+    im.filepath_raw = p; im.file_format = 'PNG'; im.save()
+    if im.packed_file:
+        im.unpack(method='REMOVE')
+    im.filepath = p; im.reload(); im.pack()
 json.dump(data, open(os.path.join(out, 'bike_450_parts.json'), 'w'), indent=1)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out, 'bike_450_parts.blend'))
 bpy.ops.export_scene.fbx(filepath=os.path.join(out, 'bike_450_parts.fbx'), object_types={'MESH'},

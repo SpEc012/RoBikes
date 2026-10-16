@@ -21,6 +21,7 @@ them at runtime.
   radii.
 - The mesh's own fork angle (22.3°) is used as the steering axis, so the wheel never leaves the fork. All hardpoints
   live in `my-version/src/ReplicatedStorage/Robikes/BikeModelData.luau`.
+- Textures are embedded as PNG (Studio's importer rejects the WebP the generator produced).
 - 11,626 triangles in total; the largest part (Frame) is 5,678.
 - `bike_450_parts_side.png` / `bike_450_parts_3q.png` show the split (grey frame, blue steering, cyan fork lowers, red
   front wheel, yellow rear wheel, green swingarm).
