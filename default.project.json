@@ -1,0 +1,23 @@
+{
+  "name": "robikes",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "RobikesShared": {
+        "$path": "src/shared"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Robikes": {
+          "$path": "src/client"
+        }
+      }
+    },
+    "Workspace": {
+      "$properties": {
+        "Gravity": 196.2
+      }
+    }
+  }
+}

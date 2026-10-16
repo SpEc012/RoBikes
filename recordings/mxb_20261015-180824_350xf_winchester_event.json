@@ -1,0 +1,29 @@
+{
+  "evnt": {
+    "rider_name": "SpEc",
+    "bike_id": "350xf",
+    "bike_name": "MSM 350XF",
+    "num_gears": 5,
+    "max_rpm": 13400,
+    "limiter": 13400,
+    "shift_rpm": 11500,
+    "engine_opt_temp": 60,
+    "temp_alarm_low": 52,
+    "temp_alarm_high": 72,
+    "max_fuel": 7.5,
+    "susp_max_travel_f": 0.30000001192092896,
+    "susp_max_travel_r": 0.11999999731779099,
+    "steer_lock": 42,
+    "category": "mx_450_4st",
+    "track_id": "winchester",
+    "track_name": "Winchester",
+    "track_length": 1898.236083984375,
+    "event_type": 1
+  },
+  "sesn": {
+    "session": 1,
+    "conditions": 0,
+    "air_temp": 20,
+    "setup_file": ""
+  }
+}

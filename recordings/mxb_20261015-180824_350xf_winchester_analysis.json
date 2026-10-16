@@ -1,0 +1,1989 @@
+{
+  "file": "mxb_20261015-180824_350xf_winchester_data.csv",
+  "bike": "350xf",
+  "info": {
+    "evnt": {
+      "rider_name": "SpEc",
+      "bike_id": "350xf",
+      "bike_name": "MSM 350XF",
+      "num_gears": 5,
+      "max_rpm": 13400,
+      "limiter": 13400,
+      "shift_rpm": 11500,
+      "engine_opt_temp": 60,
+      "temp_alarm_low": 52,
+      "temp_alarm_high": 72,
+      "max_fuel": 7.5,
+      "susp_max_travel_f": 0.30000001192092896,
+      "susp_max_travel_r": 0.11999999731779099,
+      "steer_lock": 42,
+      "category": "mx_450_4st",
+      "track_id": "winchester",
+      "track_name": "Winchester",
+      "track_length": 1898.236083984375,
+      "event_type": 1
+    },
+    "sesn": {
+      "session": 1,
+      "conditions": 0,
+      "air_temp": 20,
+      "setup_file": ""
+    }
+  },
+  "synthetic": false,
+  "rates": {
+    "packets_running": 31838,
+    "exact_duplicate_packets": 4502,
+    "recording_seconds": 360.5,
+    "riding_seconds": 318.3,
+    "packets_per_second": 100,
+    "distinct_game_samples": 27336,
+    "new_samples_per_game_second": 85.81,
+    "game_seconds_per_real_second": 1.0005,
+    "game_time_step_histogram_ms": [
+      {
+        "ms": 10,
+        "count": 22032
+      },
+      {
+        "ms": 20,
+        "count": 4284
+      },
+      {
+        "ms": 11,
+        "count": 373
+      },
+      {
+        "ms": 9,
+        "count": 346
+      },
+      {
+        "ms": 19,
+        "count": 104
+      },
+      {
+        "ms": 21,
+        "count": 84
+      },
+      {
+        "ms": 12,
+        "count": 43
+      },
+      {
+        "ms": 8,
+        "count": 32
+      }
+    ],
+    "typical_step_ms": 10,
+    "fraction_steps_multiple_of_10ms": 0.9966,
+    "skipped_samples": 4517,
+    "rebuilt_time": {
+      "segments": 10,
+      "position_resets": 6,
+      "rebuilt_segments": 10,
+      "step_ms": [
+        10.0007,
+        9.9986,
+        10.0001,
+        10,
+        10,
+        10.0001,
+        10,
+        10,
+        10,
+        10
+      ],
+      "max_abs_residual_ms": 1.555,
+      "note": "time_ms is truncated to whole ms; when steps are regular the exact step is fitted (step_ms per segment)"
+    },
+    "packet_arrival_gap_ms": {
+      "median": 10,
+      "p05": 9.1,
+      "p95": 11
+    },
+    "position_vs_velocity_rms_error_mps": 0.1157,
+    "mean_abs_velocity_mps": 5.76
+  },
+  "conventions": {
+    "airborne_samples": 3437,
+    "airborne_mean_accel_world_mps2": [
+      -0.02,
+      -9.78,
+      0.05
+    ],
+    "world_up_axis": "+Y",
+    "rotation_matrix": {
+      "forward_axis": "+col 2",
+      "forward_alignment_with_velocity": 0.995,
+      "up_axis": "+col 1",
+      "up_alignment_with_world_up": 0.821,
+      "samples": 11624
+    },
+    "accelerometer_best_match": {
+      "layout": "col",
+      "gravity": "kinematic",
+      "derivative": "central",
+      "rms_error_G": 0.7411
+    },
+    "accelerometer_candidates": [
+      {
+        "layout": "col",
+        "gravity": "kinematic",
+        "derivative": "central",
+        "rms_error_G": 0.7411
+      },
+      {
+        "layout": "col",
+        "gravity": "kinematic",
+        "derivative": "backward_10ms",
+        "rms_error_G": 0.7606
+      },
+      {
+        "layout": "col",
+        "gravity": "specific_force",
+        "derivative": "central",
+        "rms_error_G": 0.9406
+      },
+      {
+        "layout": "col",
+        "gravity": "specific_force",
+        "derivative": "backward_10ms",
+        "rms_error_G": 0.9558
+      },
+      {
+        "layout": "row",
+        "gravity": "kinematic",
+        "derivative": "central",
+        "rms_error_G": 1.0592
+      },
+      {
+        "layout": "row",
+        "gravity": "kinematic",
+        "derivative": "backward_10ms",
+        "rms_error_G": 1.1005
+      },
+      {
+        "layout": "row",
+        "gravity": "specific_force",
+        "derivative": "central",
+        "rms_error_G": 1.1583
+      },
+      {
+        "layout": "row",
+        "gravity": "specific_force",
+        "derivative": "backward_10ms",
+        "rms_error_G": 1.1961
+      }
+    ],
+    "accelerometer_at_rest_G": {
+      "samples": 1570,
+      "mean_xyz": [
+        0,
+        -0.001,
+        0
+      ],
+      "meaning": "kinematic: no gravity (0 at rest)"
+    },
+    "velocity_reference_point": {
+      "best_h_m": 0,
+      "median_error_mps_at_best": 0.013,
+      "median_error_mps_at_h0": 0.013,
+      "meaning": "h = height up the chassis axis, above the position point, of the point whose velocity is reported"
+    },
+    "accelerometer_point": {
+      "h_m_all_axes": 0.702,
+      "h_m_per_axis": [
+        0.691,
+        0.624,
+        0.707
+      ],
+      "rms_error_mps2_before": [
+        4.902,
+        2.092,
+        11.838
+      ],
+      "rms_error_mps2_after": [
+        2.343,
+        0.621,
+        3.312
+      ],
+      "meaning": "the accelerometer behaves like a point h metres up the chassis axis from the velocity point"
+    },
+    "speedometer_rms_difference_mps": {
+      "vs_speed_3d": 0,
+      "vs_forward_speed": 1.801,
+      "vs_front_wheel_speed": 1.499,
+      "vs_rear_wheel_speed": 5.684
+    }
+  },
+  "suspension": {
+    "front": {
+      "length_min_m": -0.0006,
+      "length_max_m": 0.2911,
+      "length_fully_extended_m": 0.291,
+      "fully_extended_from": "3467 airborne samples",
+      "travel_used_m": 0.2916,
+      "max_travel_reported_by_game_m": 0.3,
+      "max_travel_minus_cfg_preload_m": 0.291,
+      "compression_makes_length": "shorter",
+      "susp_vel_vs_dlen_dt": {
+        "slope": 0.99,
+        "r": 0.9966,
+        "n": 16827
+      },
+      "compression_velocity_sign": "negative",
+      "compression_speed_percentiles_mps": {
+        "p50": 0.039,
+        "p90": 0.45,
+        "p99": 2.025,
+        "max": 4.341
+      },
+      "fraction_of_compression_samples_above_threshold0": 0.456,
+      "fraction_of_compression_samples_above_threshold1": 0.033
+    },
+    "rear": {
+      "length_min_m": -0.0014,
+      "length_max_m": 0.1084,
+      "length_fully_extended_m": 0.108,
+      "fully_extended_from": "3227 airborne samples",
+      "travel_used_m": 0.1093,
+      "max_travel_reported_by_game_m": 0.12,
+      "max_travel_minus_cfg_preload_m": 0.108,
+      "compression_makes_length": "shorter",
+      "susp_vel_vs_dlen_dt": {
+        "slope": 0.98,
+        "r": 0.99,
+        "n": 16827
+      },
+      "compression_velocity_sign": "negative",
+      "compression_speed_percentiles_mps": {
+        "p50": 0.031,
+        "p90": 0.219,
+        "p99": 0.98,
+        "max": 4.013
+      },
+      "fraction_of_compression_samples_above_threshold0": 0.381,
+      "fraction_of_compression_samples_above_threshold1": 0.049
+    },
+    "landings": [
+      {
+        "t": 12.39,
+        "airtime_s": 1.5,
+        "vertical_speed_at_touchdown_mps": -9.23,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.193,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 3.02,
+        "peak_comp_speed_rear_mps": 2,
+        "peak_accel_G": 12.19,
+        "crashed_after": 0
+      },
+      {
+        "t": 12.99,
+        "airtime_s": 0.39,
+        "vertical_speed_at_touchdown_mps": -5.64,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.21,
+        "peak_compression_rear_m": 0.089,
+        "peak_comp_speed_front_mps": 1.51,
+        "peak_comp_speed_rear_mps": 0.97,
+        "peak_accel_G": 4.88,
+        "crashed_after": 0
+      },
+      {
+        "t": 18.05,
+        "airtime_s": 0.46,
+        "vertical_speed_at_touchdown_mps": -1.48,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.176,
+        "peak_compression_rear_m": 0.101,
+        "peak_comp_speed_front_mps": 1.96,
+        "peak_comp_speed_rear_mps": 0.99,
+        "peak_accel_G": 5.22,
+        "crashed_after": 0
+      },
+      {
+        "t": 18.78,
+        "airtime_s": 0.44,
+        "vertical_speed_at_touchdown_mps": -1.38,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.23,
+        "peak_compression_rear_m": 0.084,
+        "peak_comp_speed_front_mps": 1.75,
+        "peak_comp_speed_rear_mps": 0.99,
+        "peak_accel_G": 4.82,
+        "crashed_after": 0
+      },
+      {
+        "t": 19.79,
+        "airtime_s": 0.66,
+        "vertical_speed_at_touchdown_mps": -3.29,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.267,
+        "peak_compression_rear_m": 0.07,
+        "peak_comp_speed_front_mps": 2.49,
+        "peak_comp_speed_rear_mps": 1.03,
+        "peak_accel_G": 5.84,
+        "crashed_after": 0
+      },
+      {
+        "t": 20.39,
+        "airtime_s": 0.33,
+        "vertical_speed_at_touchdown_mps": -0.53,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.137,
+        "peak_compression_rear_m": 0.001,
+        "peak_comp_speed_front_mps": 1.2,
+        "peak_comp_speed_rear_mps": 0.13,
+        "peak_accel_G": 18.08,
+        "crashed_after": 1
+      },
+      {
+        "t": 30.4,
+        "airtime_s": 1.23,
+        "vertical_speed_at_touchdown_mps": -7.84,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.211,
+        "peak_compression_rear_m": 0.107,
+        "peak_comp_speed_front_mps": 3.33,
+        "peak_comp_speed_rear_mps": 1.42,
+        "peak_accel_G": 8.98,
+        "crashed_after": 0
+      },
+      {
+        "t": 31.02,
+        "airtime_s": 0.32,
+        "vertical_speed_at_touchdown_mps": -3.91,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.125,
+        "peak_compression_rear_m": 0.053,
+        "peak_comp_speed_front_mps": 0.99,
+        "peak_comp_speed_rear_mps": 0.42,
+        "peak_accel_G": 1.38,
+        "crashed_after": 0
+      },
+      {
+        "t": 33.9,
+        "airtime_s": 0.27,
+        "vertical_speed_at_touchdown_mps": -2.59,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.148,
+        "peak_compression_rear_m": 0.006,
+        "peak_comp_speed_front_mps": 1.56,
+        "peak_comp_speed_rear_mps": 0.16,
+        "peak_accel_G": 2.62,
+        "crashed_after": 1
+      },
+      {
+        "t": 43.4,
+        "airtime_s": 1.18,
+        "vertical_speed_at_touchdown_mps": -4.61,
+        "first_contact": "both",
+        "peak_compression_front_m": 0.176,
+        "peak_compression_rear_m": 0.105,
+        "peak_comp_speed_front_mps": 2.21,
+        "peak_comp_speed_rear_mps": 1.6,
+        "peak_accel_G": 8.07,
+        "crashed_after": 0
+      },
+      {
+        "t": 56.36,
+        "airtime_s": 1.33,
+        "vertical_speed_at_touchdown_mps": -8.92,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.259,
+        "peak_compression_rear_m": 0.103,
+        "peak_comp_speed_front_mps": 3.1,
+        "peak_comp_speed_rear_mps": 2.08,
+        "peak_accel_G": 12.48,
+        "crashed_after": 0
+      },
+      {
+        "t": 60.62,
+        "airtime_s": 2.15,
+        "vertical_speed_at_touchdown_mps": -9.09,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.238,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 4.07,
+        "peak_comp_speed_rear_mps": 1.85,
+        "peak_accel_G": 24.44,
+        "crashed_after": 0
+      },
+      {
+        "t": 67.57,
+        "airtime_s": 1.21,
+        "vertical_speed_at_touchdown_mps": -7.41,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.137,
+        "peak_compression_rear_m": 0.105,
+        "peak_comp_speed_front_mps": 2.23,
+        "peak_comp_speed_rear_mps": 0.83,
+        "peak_accel_G": 5.93,
+        "crashed_after": 0
+      },
+      {
+        "t": 68.71,
+        "airtime_s": 0.48,
+        "vertical_speed_at_touchdown_mps": -7.01,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.172,
+        "peak_compression_rear_m": 0.097,
+        "peak_comp_speed_front_mps": 1.75,
+        "peak_comp_speed_rear_mps": 0.94,
+        "peak_accel_G": 4.68,
+        "crashed_after": 0
+      },
+      {
+        "t": 72.09,
+        "airtime_s": 1.93,
+        "vertical_speed_at_touchdown_mps": -8.25,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.291,
+        "peak_compression_rear_m": 0.109,
+        "peak_comp_speed_front_mps": 4.12,
+        "peak_comp_speed_rear_mps": 3.86,
+        "peak_accel_G": 49.04,
+        "crashed_after": 1
+      },
+      {
+        "t": 94.86,
+        "airtime_s": 0.4,
+        "vertical_speed_at_touchdown_mps": -2.3,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.149,
+        "peak_compression_rear_m": 0.092,
+        "peak_comp_speed_front_mps": 1.73,
+        "peak_comp_speed_rear_mps": 1.07,
+        "peak_accel_G": 5.56,
+        "crashed_after": 0
+      },
+      {
+        "t": 95.7,
+        "airtime_s": 0.49,
+        "vertical_speed_at_touchdown_mps": -2.78,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.16,
+        "peak_compression_rear_m": 0.101,
+        "peak_comp_speed_front_mps": 2.21,
+        "peak_comp_speed_rear_mps": 1.37,
+        "peak_accel_G": 6.3,
+        "crashed_after": 0
+      },
+      {
+        "t": 96.5,
+        "airtime_s": 0.55,
+        "vertical_speed_at_touchdown_mps": -2.94,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.199,
+        "peak_compression_rear_m": 0.076,
+        "peak_comp_speed_front_mps": 1.51,
+        "peak_comp_speed_rear_mps": 1.05,
+        "peak_accel_G": 5,
+        "crashed_after": 0
+      },
+      {
+        "t": 100.67,
+        "airtime_s": 0.31,
+        "vertical_speed_at_touchdown_mps": -1.32,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.184,
+        "peak_compression_rear_m": 0.079,
+        "peak_comp_speed_front_mps": 1.25,
+        "peak_comp_speed_rear_mps": 0.79,
+        "peak_accel_G": 3.01,
+        "crashed_after": 0
+      },
+      {
+        "t": 101.44,
+        "airtime_s": 0.38,
+        "vertical_speed_at_touchdown_mps": -1.42,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.168,
+        "peak_compression_rear_m": 0.077,
+        "peak_comp_speed_front_mps": 1.38,
+        "peak_comp_speed_rear_mps": 0.88,
+        "peak_accel_G": 3.54,
+        "crashed_after": 0
+      },
+      {
+        "t": 107.1,
+        "airtime_s": 1.52,
+        "vertical_speed_at_touchdown_mps": -8.56,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.205,
+        "peak_compression_rear_m": 0.1,
+        "peak_comp_speed_front_mps": 2.28,
+        "peak_comp_speed_rear_mps": 1.77,
+        "peak_accel_G": 10.49,
+        "crashed_after": 0
+      },
+      {
+        "t": 115.93,
+        "airtime_s": 0.31,
+        "vertical_speed_at_touchdown_mps": -1.43,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.167,
+        "peak_compression_rear_m": 0.059,
+        "peak_comp_speed_front_mps": 1.21,
+        "peak_comp_speed_rear_mps": 0.77,
+        "peak_accel_G": 3.5,
+        "crashed_after": 0
+      },
+      {
+        "t": 123.04,
+        "airtime_s": 1.51,
+        "vertical_speed_at_touchdown_mps": -8.07,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.292,
+        "peak_compression_rear_m": 0.097,
+        "peak_comp_speed_front_mps": 4.34,
+        "peak_comp_speed_rear_mps": 2.36,
+        "peak_accel_G": 18.05,
+        "crashed_after": 0
+      },
+      {
+        "t": 124.3,
+        "airtime_s": 0.99,
+        "vertical_speed_at_touchdown_mps": -6.41,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.207,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 3.2,
+        "peak_comp_speed_rear_mps": 1.21,
+        "peak_accel_G": 11.29,
+        "crashed_after": 0
+      },
+      {
+        "t": 129.82,
+        "airtime_s": 2.04,
+        "vertical_speed_at_touchdown_mps": -10.46,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.291,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 4.12,
+        "peak_comp_speed_rear_mps": 4.01,
+        "peak_accel_G": 42.81,
+        "crashed_after": 0
+      },
+      {
+        "t": 130.42,
+        "airtime_s": 0.36,
+        "vertical_speed_at_touchdown_mps": -0.11,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.123,
+        "peak_compression_rear_m": 0.057,
+        "peak_comp_speed_front_mps": 2.81,
+        "peak_comp_speed_rear_mps": 1.1,
+        "peak_accel_G": 12.05,
+        "crashed_after": 1
+      },
+      {
+        "t": 176.76,
+        "airtime_s": 0.35,
+        "vertical_speed_at_touchdown_mps": -2.72,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.089,
+        "peak_compression_rear_m": 0.064,
+        "peak_comp_speed_front_mps": 1.15,
+        "peak_comp_speed_rear_mps": 0.57,
+        "peak_accel_G": 3.26,
+        "crashed_after": 0
+      },
+      {
+        "t": 179.23,
+        "airtime_s": 0.88,
+        "vertical_speed_at_touchdown_mps": -6.21,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.129,
+        "peak_compression_rear_m": 0.1,
+        "peak_comp_speed_front_mps": 1.88,
+        "peak_comp_speed_rear_mps": 0.85,
+        "peak_accel_G": 4.51,
+        "crashed_after": 0
+      },
+      {
+        "t": 194.02,
+        "airtime_s": 1.58,
+        "vertical_speed_at_touchdown_mps": -8.2,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.281,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 3.77,
+        "peak_comp_speed_rear_mps": 3.29,
+        "peak_accel_G": 23.67,
+        "crashed_after": 0
+      },
+      {
+        "t": 195.23,
+        "airtime_s": 0.99,
+        "vertical_speed_at_touchdown_mps": -6.88,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.166,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 2.92,
+        "peak_comp_speed_rear_mps": 1.23,
+        "peak_accel_G": 8.69,
+        "crashed_after": 0
+      },
+      {
+        "t": 201.91,
+        "airtime_s": 1.86,
+        "vertical_speed_at_touchdown_mps": -8.6,
+        "first_contact": "both",
+        "peak_compression_front_m": 0.212,
+        "peak_compression_rear_m": 0.102,
+        "peak_comp_speed_front_mps": 3.17,
+        "peak_comp_speed_rear_mps": 1.7,
+        "peak_accel_G": 10.85,
+        "crashed_after": 0
+      },
+      {
+        "t": 211.35,
+        "airtime_s": 1.96,
+        "vertical_speed_at_touchdown_mps": -8.61,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.209,
+        "peak_compression_rear_m": 0.107,
+        "peak_comp_speed_front_mps": 3.32,
+        "peak_comp_speed_rear_mps": 1.67,
+        "peak_accel_G": 9.66,
+        "crashed_after": 0
+      },
+      {
+        "t": 223.01,
+        "airtime_s": 1.93,
+        "vertical_speed_at_touchdown_mps": -9.63,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.184,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 3.27,
+        "peak_comp_speed_rear_mps": 1.37,
+        "peak_accel_G": 9.84,
+        "crashed_after": 0
+      },
+      {
+        "t": 224.92,
+        "airtime_s": 0.51,
+        "vertical_speed_at_touchdown_mps": -2.65,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.212,
+        "peak_compression_rear_m": 0.106,
+        "peak_comp_speed_front_mps": 1.78,
+        "peak_comp_speed_rear_mps": 1.13,
+        "peak_accel_G": 6.11,
+        "crashed_after": 0
+      },
+      {
+        "t": 227.32,
+        "airtime_s": 1.63,
+        "vertical_speed_at_touchdown_mps": -8.15,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.205,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 2.71,
+        "peak_comp_speed_rear_mps": 1.27,
+        "peak_accel_G": 9.07,
+        "crashed_after": 0
+      },
+      {
+        "t": 237.73,
+        "airtime_s": 1.47,
+        "vertical_speed_at_touchdown_mps": -8.88,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.115,
+        "peak_compression_rear_m": 0.106,
+        "peak_comp_speed_front_mps": 2.91,
+        "peak_comp_speed_rear_mps": 1.79,
+        "peak_accel_G": 9.44,
+        "crashed_after": 0
+      },
+      {
+        "t": 242.9,
+        "airtime_s": 0.49,
+        "vertical_speed_at_touchdown_mps": -1.26,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.156,
+        "peak_compression_rear_m": 0.095,
+        "peak_comp_speed_front_mps": 2.02,
+        "peak_comp_speed_rear_mps": 0.96,
+        "peak_accel_G": 5.77,
+        "crashed_after": 0
+      },
+      {
+        "t": 243.59,
+        "airtime_s": 0.44,
+        "vertical_speed_at_touchdown_mps": -1.37,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.242,
+        "peak_compression_rear_m": 0.093,
+        "peak_comp_speed_front_mps": 1.8,
+        "peak_comp_speed_rear_mps": 1.02,
+        "peak_accel_G": 5.11,
+        "crashed_after": 0
+      },
+      {
+        "t": 244.64,
+        "airtime_s": 0.76,
+        "vertical_speed_at_touchdown_mps": -3.69,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.202,
+        "peak_compression_rear_m": 0.066,
+        "peak_comp_speed_front_mps": 1.73,
+        "peak_comp_speed_rear_mps": 1.19,
+        "peak_accel_G": 9.36,
+        "crashed_after": 1
+      },
+      {
+        "t": 269.74,
+        "airtime_s": 0.63,
+        "vertical_speed_at_touchdown_mps": -3.76,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.256,
+        "peak_compression_rear_m": 0.104,
+        "peak_comp_speed_front_mps": 2.33,
+        "peak_comp_speed_rear_mps": 1.66,
+        "peak_accel_G": 11.13,
+        "crashed_after": 0
+      },
+      {
+        "t": 271.32,
+        "airtime_s": 1.07,
+        "vertical_speed_at_touchdown_mps": -7.55,
+        "first_contact": "front",
+        "peak_compression_front_m": 0.257,
+        "peak_compression_rear_m": 0.108,
+        "peak_comp_speed_front_mps": 3,
+        "peak_comp_speed_rear_mps": 2.55,
+        "peak_accel_G": 17.19,
+        "crashed_after": 0
+      },
+      {
+        "t": 271.89,
+        "airtime_s": 0.35,
+        "vertical_speed_at_touchdown_mps": -0.71,
+        "first_contact": "rear",
+        "peak_compression_front_m": 0.153,
+        "peak_compression_rear_m": 0.02,
+        "peak_comp_speed_front_mps": 2.07,
+        "peak_comp_speed_rear_mps": 0.33,
+        "peak_accel_G": 5.3,
+        "crashed_after": 1
+      }
+    ],
+    "damper_fit": {
+      "samples": 16534,
+      "assumed_mass_kg": 154.01,
+      "one_stage": {
+        "rms_residual_N": 402,
+        "r2": 0.9002
+      },
+      "three_stage": {
+        "rms_residual_N": 362.1,
+        "r2": 0.919
+      },
+      "improvement_three_vs_one_percent": 9.92,
+      "coefficients": {
+        "front_bump": {
+          "fitted_N_s_per_m": [
+            2936,
+            434,
+            2791
+          ],
+          "std_error": [
+            244,
+            27,
+            42
+          ],
+          "fitted_ratio_c2_c1": 0.148,
+          "fitted_ratio_c3_c1": 0.951,
+          "cfg_values": [
+            2160,
+            360,
+            1500
+          ],
+          "cfg_ratio_c2_c1": 0.167,
+          "cfg_ratio_c3_c1": 0.694,
+          "fitted_over_cfg_per_stage": [
+            1.359,
+            1.205,
+            1.861
+          ]
+        },
+        "front_rebound": {
+          "fitted_N_s_per_m": [
+            467,
+            264,
+            -943
+          ],
+          "std_error": [
+            226,
+            28,
+            254
+          ],
+          "fitted_ratio_c2_c1": 0.566,
+          "fitted_ratio_c3_c1": -2.017,
+          "cfg_values": [
+            1440,
+            480,
+            1500
+          ],
+          "cfg_ratio_c2_c1": 0.333,
+          "cfg_ratio_c3_c1": 1.042,
+          "fitted_over_cfg_per_stage": [
+            0.324,
+            0.551,
+            -0.628
+          ]
+        },
+        "rear_bump": {
+          "fitted_N_s_per_m": [
+            5263,
+            1192,
+            5074
+          ],
+          "std_error": [
+            256,
+            70,
+            69
+          ],
+          "fitted_ratio_c2_c1": 0.227,
+          "fitted_ratio_c3_c1": 0.964,
+          "cfg_values": [
+            9000,
+            1800,
+            12000
+          ],
+          "cfg_ratio_c2_c1": 0.2,
+          "cfg_ratio_c3_c1": 1.333,
+          "fitted_over_cfg_per_stage": [
+            0.585,
+            0.662,
+            0.423
+          ]
+        },
+        "rear_rebound": {
+          "fitted_N_s_per_m": [
+            1428,
+            3027,
+            3404
+          ],
+          "std_error": [
+            245,
+            69,
+            330
+          ],
+          "fitted_ratio_c2_c1": 2.12,
+          "fitted_ratio_c3_c1": 2.384,
+          "cfg_values": [
+            6000,
+            4500,
+            12000
+          ],
+          "cfg_ratio_c2_c1": 0.75,
+          "cfg_ratio_c3_c1": 2,
+          "fitted_over_cfg_per_stage": [
+            0.238,
+            0.673,
+            0.284
+          ]
+        }
+      },
+      "springs": {
+        "front": {
+          "preload_N": 114,
+          "k_N_per_m": 2382,
+          "k2_N_per_m2": 22453
+        },
+        "rear": {
+          "preload_N": 524,
+          "k_N_per_m": 21547,
+          "k2_N_per_m2": 105615
+        }
+      },
+      "threshold_scans": {
+        "front_bump_threshold0": {
+          "cfg": 0.05,
+          "best": 0.02,
+          "contrast_percent": 0.21,
+          "curve": [
+            {
+              "threshold": 0.01,
+              "rms_N": 362.14
+            },
+            {
+              "threshold": 0.02,
+              "rms_N": 361.9
+            },
+            {
+              "threshold": 0.03,
+              "rms_N": 361.91
+            },
+            {
+              "threshold": 0.05,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 0.08,
+              "rms_N": 362.3
+            },
+            {
+              "threshold": 0.12,
+              "rms_N": 362.51
+            },
+            {
+              "threshold": 0.2,
+              "rms_N": 362.66
+            }
+          ]
+        },
+        "front_bump_threshold1": {
+          "cfg": 1.1,
+          "best": 1.1,
+          "contrast_percent": 3.88,
+          "curve": [
+            {
+              "threshold": 0.1,
+              "rms_N": 376.7
+            },
+            {
+              "threshold": 0.15,
+              "rms_N": 375.82
+            },
+            {
+              "threshold": 0.2,
+              "rms_N": 375.06
+            },
+            {
+              "threshold": 0.3,
+              "rms_N": 373.18
+            },
+            {
+              "threshold": 0.4,
+              "rms_N": 371.37
+            },
+            {
+              "threshold": 0.5,
+              "rms_N": 369.78
+            },
+            {
+              "threshold": 0.6,
+              "rms_N": 368.09
+            },
+            {
+              "threshold": 0.8,
+              "rms_N": 364.91
+            },
+            {
+              "threshold": 1,
+              "rms_N": 362.6
+            },
+            {
+              "threshold": 1.1,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 1.3,
+              "rms_N": 362.23
+            },
+            {
+              "threshold": 1.6,
+              "rms_N": 364.67
+            },
+            {
+              "threshold": 2,
+              "rms_N": 366.86
+            }
+          ]
+        },
+        "front_rebound_threshold0": {
+          "cfg": 0.05,
+          "best": 0.08,
+          "contrast_percent": 0.01,
+          "curve": [
+            {
+              "threshold": 0.01,
+              "rms_N": 362.08
+            },
+            {
+              "threshold": 0.02,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 0.03,
+              "rms_N": 362.1
+            },
+            {
+              "threshold": 0.05,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 0.08,
+              "rms_N": 362.07
+            },
+            {
+              "threshold": 0.12,
+              "rms_N": 362.08
+            },
+            {
+              "threshold": 0.2,
+              "rms_N": 362.09
+            }
+          ]
+        },
+        "front_rebound_threshold1": {
+          "cfg": 1.1,
+          "best": 1.6,
+          "contrast_percent": 0.17,
+          "curve": [
+            {
+              "threshold": 0.1,
+              "rms_N": 362.26
+            },
+            {
+              "threshold": 0.15,
+              "rms_N": 362.3
+            },
+            {
+              "threshold": 0.2,
+              "rms_N": 362.3
+            },
+            {
+              "threshold": 0.3,
+              "rms_N": 362.29
+            },
+            {
+              "threshold": 0.4,
+              "rms_N": 362.28
+            },
+            {
+              "threshold": 0.5,
+              "rms_N": 362.27
+            },
+            {
+              "threshold": 0.6,
+              "rms_N": 362.26
+            },
+            {
+              "threshold": 0.8,
+              "rms_N": 362.28
+            },
+            {
+              "threshold": 1,
+              "rms_N": 362.19
+            },
+            {
+              "threshold": 1.1,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 1.3,
+              "rms_N": 362.07
+            },
+            {
+              "threshold": 1.6,
+              "rms_N": 361.69
+            },
+            {
+              "threshold": 2,
+              "rms_N": 362.32
+            }
+          ]
+        },
+        "rear_bump_threshold0": {
+          "cfg": 0.05,
+          "best": 0.05,
+          "contrast_percent": 0.38,
+          "curve": [
+            {
+              "threshold": 0.01,
+              "rms_N": 363.25
+            },
+            {
+              "threshold": 0.02,
+              "rms_N": 362.8
+            },
+            {
+              "threshold": 0.03,
+              "rms_N": 362.45
+            },
+            {
+              "threshold": 0.05,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 0.08,
+              "rms_N": 362.22
+            },
+            {
+              "threshold": 0.12,
+              "rms_N": 362.81
+            },
+            {
+              "threshold": 0.2,
+              "rms_N": 363.47
+            }
+          ]
+        },
+        "rear_bump_threshold1": {
+          "cfg": 0.4,
+          "best": 0.4,
+          "contrast_percent": 3.11,
+          "curve": [
+            {
+              "threshold": 0.1,
+              "rms_N": 369.85
+            },
+            {
+              "threshold": 0.15,
+              "rms_N": 367.41
+            },
+            {
+              "threshold": 0.2,
+              "rms_N": 365.59
+            },
+            {
+              "threshold": 0.3,
+              "rms_N": 362.87
+            },
+            {
+              "threshold": 0.4,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 0.5,
+              "rms_N": 362.43
+            },
+            {
+              "threshold": 0.6,
+              "rms_N": 363.09
+            },
+            {
+              "threshold": 0.8,
+              "rms_N": 365.86
+            },
+            {
+              "threshold": 1,
+              "rms_N": 367.69
+            },
+            {
+              "threshold": 1.1,
+              "rms_N": 368.54
+            },
+            {
+              "threshold": 1.3,
+              "rms_N": 370.79
+            },
+            {
+              "threshold": 1.6,
+              "rms_N": 371.51
+            },
+            {
+              "threshold": 2,
+              "rms_N": 373.7
+            }
+          ]
+        },
+        "rear_rebound_threshold0": {
+          "cfg": 0.05,
+          "best": 0.02,
+          "contrast_percent": 0.16,
+          "curve": [
+            {
+              "threshold": 0.01,
+              "rms_N": 361.86
+            },
+            {
+              "threshold": 0.02,
+              "rms_N": 361.83
+            },
+            {
+              "threshold": 0.03,
+              "rms_N": 361.9
+            },
+            {
+              "threshold": 0.05,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 0.08,
+              "rms_N": 362.27
+            },
+            {
+              "threshold": 0.12,
+              "rms_N": 362.35
+            },
+            {
+              "threshold": 0.2,
+              "rms_N": 362.41
+            }
+          ]
+        },
+        "rear_rebound_threshold1": {
+          "cfg": 0.4,
+          "best": 0.6,
+          "contrast_percent": 0.04,
+          "curve": [
+            {
+              "threshold": 0.1,
+              "rms_N": 361.99
+            },
+            {
+              "threshold": 0.15,
+              "rms_N": 362.05
+            },
+            {
+              "threshold": 0.2,
+              "rms_N": 362.08
+            },
+            {
+              "threshold": 0.3,
+              "rms_N": 362.1
+            },
+            {
+              "threshold": 0.4,
+              "rms_N": 362.09
+            },
+            {
+              "threshold": 0.5,
+              "rms_N": 362.1
+            },
+            {
+              "threshold": 0.6,
+              "rms_N": 361.94
+            },
+            {
+              "threshold": 0.8,
+              "rms_N": 362.1
+            },
+            {
+              "threshold": 1,
+              "rms_N": 362.1
+            },
+            {
+              "threshold": 1.1,
+              "rms_N": 362.1
+            },
+            {
+              "threshold": 1.3,
+              "rms_N": 362.1
+            },
+            {
+              "threshold": 1.6,
+              "rms_N": 362.1
+            },
+            {
+              "threshold": 2,
+              "rms_N": 362.1
+            }
+          ]
+        }
+      }
+    },
+    "damper_fit_landings_only": {
+      "samples": 1591,
+      "assumed_mass_kg": 154.01,
+      "one_stage": {
+        "rms_residual_N": 960.4,
+        "r2": 0.8549
+      },
+      "three_stage": {
+        "rms_residual_N": 888.8,
+        "r2": 0.8757
+      },
+      "improvement_three_vs_one_percent": 7.46,
+      "coefficients": {
+        "front_bump": {
+          "fitted_N_s_per_m": [
+            6190,
+            275,
+            2936
+          ],
+          "std_error": [
+            3230,
+            138,
+            121
+          ],
+          "fitted_ratio_c2_c1": 0.044,
+          "fitted_ratio_c3_c1": 0.474,
+          "cfg_values": [
+            2160,
+            360,
+            1500
+          ],
+          "cfg_ratio_c2_c1": 0.167,
+          "cfg_ratio_c3_c1": 0.694,
+          "fitted_over_cfg_per_stage": [
+            2.866,
+            0.763,
+            1.957
+          ]
+        },
+        "front_rebound": {
+          "fitted_N_s_per_m": [
+            1875,
+            121,
+            -1379
+          ],
+          "std_error": [
+            2671,
+            135,
+            689
+          ],
+          "fitted_ratio_c2_c1": 0.064,
+          "fitted_ratio_c3_c1": -0.736,
+          "cfg_values": [
+            1440,
+            480,
+            1500
+          ],
+          "cfg_ratio_c2_c1": 0.333,
+          "cfg_ratio_c3_c1": 1.042,
+          "fitted_over_cfg_per_stage": [
+            1.302,
+            0.251,
+            -0.92
+          ]
+        },
+        "rear_bump": {
+          "fitted_N_s_per_m": [
+            10388,
+            1637,
+            4925
+          ],
+          "std_error": [
+            2973,
+            446,
+            219
+          ],
+          "fitted_ratio_c2_c1": 0.158,
+          "fitted_ratio_c3_c1": 0.474,
+          "cfg_values": [
+            9000,
+            1800,
+            12000
+          ],
+          "cfg_ratio_c2_c1": 0.2,
+          "cfg_ratio_c3_c1": 1.333,
+          "fitted_over_cfg_per_stage": [
+            1.154,
+            0.909,
+            0.41
+          ]
+        },
+        "rear_rebound": {
+          "fitted_N_s_per_m": [
+            -6284,
+            2564,
+            3015
+          ],
+          "std_error": [
+            2884,
+            384,
+            1023
+          ],
+          "fitted_ratio_c2_c1": -0.408,
+          "fitted_ratio_c3_c1": -0.48,
+          "cfg_values": [
+            6000,
+            4500,
+            12000
+          ],
+          "cfg_ratio_c2_c1": 0.75,
+          "cfg_ratio_c3_c1": 2,
+          "fitted_over_cfg_per_stage": [
+            -1.047,
+            0.57,
+            0.251
+          ]
+        }
+      },
+      "springs": {
+        "front": {
+          "preload_N": -62,
+          "k_N_per_m": 2941,
+          "k2_N_per_m2": 16855
+        },
+        "rear": {
+          "preload_N": 332,
+          "k_N_per_m": 14020,
+          "k2_N_per_m2": 157040
+        }
+      }
+    }
+  },
+  "gears": {
+    "primary": 3.0417,
+    "final_drive": "50/14 = 3.5714",
+    "rear_radius_m": 0.325,
+    "per_gear": [
+      {
+        "gear": 1,
+        "pair": "14:28",
+        "total_ratio": 21.726,
+        "predicted_rpm_per_mps": 638.4,
+        "samples": 3367,
+        "measured_rpm_per_mps_rear_wheel": 670.1,
+        "spread_p10_p90": [
+          642.7,
+          699.8
+        ],
+        "error_percent": 4.97,
+        "implied_wheel_radius_m": 0.3096,
+        "measured_rpm_per_mps_ground": 713.8,
+        "speed_at_limiter_kmh": 72
+      },
+      {
+        "gear": 2,
+        "pair": "16:26",
+        "total_ratio": 17.653,
+        "predicted_rpm_per_mps": 518.7,
+        "samples": 1097,
+        "measured_rpm_per_mps_rear_wheel": 544.6,
+        "spread_p10_p90": [
+          526,
+          562.5
+        ],
+        "error_percent": 4.99,
+        "implied_wheel_radius_m": 0.3096,
+        "measured_rpm_per_mps_ground": 567,
+        "speed_at_limiter_kmh": 88.6
+      },
+      {
+        "gear": 3,
+        "pair": "18:24",
+        "total_ratio": 14.484,
+        "predicted_rpm_per_mps": 425.6,
+        "samples": 1881,
+        "measured_rpm_per_mps_rear_wheel": 445.9,
+        "spread_p10_p90": [
+          430.4,
+          464.1
+        ],
+        "error_percent": 4.77,
+        "implied_wheel_radius_m": 0.3102,
+        "measured_rpm_per_mps_ground": 456.3,
+        "speed_at_limiter_kmh": 108.2
+      },
+      {
+        "gear": 4,
+        "pair": "21:24",
+        "total_ratio": 12.415,
+        "predicted_rpm_per_mps": 364.8,
+        "samples": 5743,
+        "measured_rpm_per_mps_rear_wheel": 382.1,
+        "spread_p10_p90": [
+          370,
+          395.5
+        ],
+        "error_percent": 4.74,
+        "implied_wheel_radius_m": 0.3103,
+        "measured_rpm_per_mps_ground": 378.2,
+        "speed_at_limiter_kmh": 126.3
+      },
+      {
+        "gear": 5,
+        "pair": "22:21",
+        "total_ratio": 10.369,
+        "predicted_rpm_per_mps": 304.7,
+        "samples": 556,
+        "measured_rpm_per_mps_rear_wheel": 315.9,
+        "spread_p10_p90": [
+          304.7,
+          326.1
+        ],
+        "error_percent": 3.69,
+        "implied_wheel_radius_m": 0.3134,
+        "measured_rpm_per_mps_ground": 314.9,
+        "speed_at_limiter_kmh": 152.7
+      }
+    ],
+    "gear_step_ratios": [
+      {
+        "from": 1,
+        "to": 2,
+        "measured": 1.2304,
+        "cfg": 1.2307
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "measured": 1.2214,
+        "cfg": 1.2188
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "measured": 1.167,
+        "cfg": 1.1667
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "measured": 1.2096,
+        "cfg": 1.1973
+      }
+    ]
+  },
+  "slip": {
+    "front_free_rolling": {
+      "samples": 10918,
+      "wheel_slip_p10_p50_p90": [
+        -0.0289,
+        -0.0081,
+        0.0108
+      ]
+    },
+    "rear_cruise": {
+      "samples": 790,
+      "slip_p10_p50_p90": [
+        -0.0345,
+        -0.0144,
+        0.0007
+      ]
+    },
+    "rear_full_throttle": {
+      "samples": 4266,
+      "slip_p10_p50_p90": [
+        -0.0005,
+        0.0468,
+        0.3148
+      ],
+      "per_gear": [
+        {
+          "gear": 1,
+          "samples": 1032,
+          "slip_p10_p50_p90": [
+            0.0321,
+            0.1532,
+            0.8466
+          ],
+          "median_forward_accel_G": 0.614
+        },
+        {
+          "gear": 2,
+          "samples": 373,
+          "slip_p10_p50_p90": [
+            0.0199,
+            0.0693,
+            0.319
+          ],
+          "median_forward_accel_G": 0.586
+        },
+        {
+          "gear": 3,
+          "samples": 761,
+          "slip_p10_p50_p90": [
+            0.0025,
+            0.0407,
+            0.1956
+          ],
+          "median_forward_accel_G": 0.502
+        },
+        {
+          "gear": 4,
+          "samples": 1945,
+          "slip_p10_p50_p90": [
+            -0.006,
+            0.0225,
+            0.1238
+          ],
+          "median_forward_accel_G": 0.427
+        },
+        {
+          "gear": 5,
+          "samples": 155,
+          "slip_p10_p50_p90": [
+            -0.0002,
+            0.0258,
+            0.1006
+          ],
+          "median_forward_accel_G": 0.374
+        }
+      ]
+    },
+    "accel_vs_slip_per_gear": {
+      "1": {
+        "slip_bin_with_highest_mean_accel": 0.0875,
+        "bins": [
+          {
+            "slip_from": -0.025,
+            "samples": 60,
+            "mean_forward_accel_G": 0.213
+          },
+          {
+            "slip_from": 0,
+            "samples": 75,
+            "mean_forward_accel_G": 0.233
+          },
+          {
+            "slip_from": 0.025,
+            "samples": 126,
+            "mean_forward_accel_G": 0.485
+          },
+          {
+            "slip_from": 0.05,
+            "samples": 125,
+            "mean_forward_accel_G": 0.676
+          },
+          {
+            "slip_from": 0.075,
+            "samples": 91,
+            "mean_forward_accel_G": 0.685
+          },
+          {
+            "slip_from": 0.1,
+            "samples": 91,
+            "mean_forward_accel_G": 0.668
+          },
+          {
+            "slip_from": 0.125,
+            "samples": 67,
+            "mean_forward_accel_G": 0.635
+          },
+          {
+            "slip_from": 0.15,
+            "samples": 63,
+            "mean_forward_accel_G": 0.636
+          },
+          {
+            "slip_from": 0.175,
+            "samples": 37,
+            "mean_forward_accel_G": 0.681
+          },
+          {
+            "slip_from": 0.2,
+            "samples": 34,
+            "mean_forward_accel_G": 0.581
+          },
+          {
+            "slip_from": 0.225,
+            "samples": 29,
+            "mean_forward_accel_G": 0.555
+          },
+          {
+            "slip_from": 0.25,
+            "samples": 24,
+            "mean_forward_accel_G": 0.565
+          },
+          {
+            "slip_from": 0.275,
+            "samples": 26,
+            "mean_forward_accel_G": 0.538
+          },
+          {
+            "slip_from": 0.3,
+            "samples": 22,
+            "mean_forward_accel_G": 0.508
+          },
+          {
+            "slip_from": 0.325,
+            "samples": 16,
+            "mean_forward_accel_G": 0.528
+          },
+          {
+            "slip_from": 0.35,
+            "samples": 19,
+            "mean_forward_accel_G": 0.526
+          },
+          {
+            "slip_from": 0.375,
+            "samples": 16,
+            "mean_forward_accel_G": 0.402
+          },
+          {
+            "slip_from": 0.45,
+            "samples": 16,
+            "mean_forward_accel_G": 0.526
+          },
+          {
+            "slip_from": 0.475,
+            "samples": 16,
+            "mean_forward_accel_G": 0.533
+          },
+          {
+            "slip_from": 0.5,
+            "samples": 15,
+            "mean_forward_accel_G": 0.513
+          },
+          {
+            "slip_from": 0.525,
+            "samples": 17,
+            "mean_forward_accel_G": 0.573
+          },
+          {
+            "slip_from": 0.55,
+            "samples": 20,
+            "mean_forward_accel_G": 0.432
+          },
+          {
+            "slip_from": 0.575,
+            "samples": 23,
+            "mean_forward_accel_G": 0.533
+          },
+          {
+            "slip_from": 0.6,
+            "samples": 18,
+            "mean_forward_accel_G": 0.467
+          }
+        ]
+      },
+      "2": {
+        "slip_bin_with_highest_mean_accel": 0.0625,
+        "bins": [
+          {
+            "slip_from": -0.025,
+            "samples": 15,
+            "mean_forward_accel_G": -0.023
+          },
+          {
+            "slip_from": 0,
+            "samples": 64,
+            "mean_forward_accel_G": 0.448
+          },
+          {
+            "slip_from": 0.025,
+            "samples": 89,
+            "mean_forward_accel_G": 0.581
+          },
+          {
+            "slip_from": 0.05,
+            "samples": 68,
+            "mean_forward_accel_G": 0.634
+          },
+          {
+            "slip_from": 0.075,
+            "samples": 42,
+            "mean_forward_accel_G": 0.591
+          },
+          {
+            "slip_from": 0.1,
+            "samples": 23,
+            "mean_forward_accel_G": 0.609
+          },
+          {
+            "slip_from": 0.125,
+            "samples": 29,
+            "mean_forward_accel_G": 0.562
+          },
+          {
+            "slip_from": 0.15,
+            "samples": 21,
+            "mean_forward_accel_G": 0.492
+          },
+          {
+            "slip_from": 0.175,
+            "samples": 16,
+            "mean_forward_accel_G": 0.57
+          }
+        ]
+      },
+      "3": {
+        "slip_bin_with_highest_mean_accel": 0.0875,
+        "bins": [
+          {
+            "slip_from": -0.025,
+            "samples": 88,
+            "mean_forward_accel_G": 0.356
+          },
+          {
+            "slip_from": 0,
+            "samples": 257,
+            "mean_forward_accel_G": 0.397
+          },
+          {
+            "slip_from": 0.025,
+            "samples": 178,
+            "mean_forward_accel_G": 0.502
+          },
+          {
+            "slip_from": 0.05,
+            "samples": 86,
+            "mean_forward_accel_G": 0.512
+          },
+          {
+            "slip_from": 0.075,
+            "samples": 66,
+            "mean_forward_accel_G": 0.558
+          },
+          {
+            "slip_from": 0.1,
+            "samples": 44,
+            "mean_forward_accel_G": 0.499
+          },
+          {
+            "slip_from": 0.125,
+            "samples": 32,
+            "mean_forward_accel_G": 0.431
+          },
+          {
+            "slip_from": 0.15,
+            "samples": 36,
+            "mean_forward_accel_G": 0.388
+          },
+          {
+            "slip_from": 0.175,
+            "samples": 29,
+            "mean_forward_accel_G": 0.437
+          },
+          {
+            "slip_from": 0.225,
+            "samples": 19,
+            "mean_forward_accel_G": 0.5
+          },
+          {
+            "slip_from": 0.25,
+            "samples": 17,
+            "mean_forward_accel_G": 0.421
+          }
+        ]
+      },
+      "4": {
+        "slip_bin_with_highest_mean_accel": 0.2625,
+        "bins": [
+          {
+            "slip_from": -0.05,
+            "samples": 25,
+            "mean_forward_accel_G": 0.32
+          },
+          {
+            "slip_from": -0.025,
+            "samples": 451,
+            "mean_forward_accel_G": 0.223
+          },
+          {
+            "slip_from": 0,
+            "samples": 781,
+            "mean_forward_accel_G": 0.361
+          },
+          {
+            "slip_from": 0.025,
+            "samples": 348,
+            "mean_forward_accel_G": 0.445
+          },
+          {
+            "slip_from": 0.05,
+            "samples": 205,
+            "mean_forward_accel_G": 0.455
+          },
+          {
+            "slip_from": 0.075,
+            "samples": 146,
+            "mean_forward_accel_G": 0.467
+          },
+          {
+            "slip_from": 0.1,
+            "samples": 96,
+            "mean_forward_accel_G": 0.443
+          },
+          {
+            "slip_from": 0.125,
+            "samples": 56,
+            "mean_forward_accel_G": 0.471
+          },
+          {
+            "slip_from": 0.15,
+            "samples": 33,
+            "mean_forward_accel_G": 0.462
+          },
+          {
+            "slip_from": 0.175,
+            "samples": 21,
+            "mean_forward_accel_G": 0.422
+          },
+          {
+            "slip_from": 0.2,
+            "samples": 26,
+            "mean_forward_accel_G": 0.443
+          },
+          {
+            "slip_from": 0.225,
+            "samples": 17,
+            "mean_forward_accel_G": 0.507
+          },
+          {
+            "slip_from": 0.25,
+            "samples": 24,
+            "mean_forward_accel_G": 0.527
+          }
+        ]
+      },
+      "5": {
+        "slip_bin_with_highest_mean_accel": 0.0625,
+        "bins": [
+          {
+            "slip_from": -0.025,
+            "samples": 30,
+            "mean_forward_accel_G": 0.183
+          },
+          {
+            "slip_from": 0,
+            "samples": 69,
+            "mean_forward_accel_G": 0.248
+          },
+          {
+            "slip_from": 0.025,
+            "samples": 48,
+            "mean_forward_accel_G": 0.297
+          },
+          {
+            "slip_from": 0.05,
+            "samples": 19,
+            "mean_forward_accel_G": 0.386
+          }
+        ]
+      }
+    },
+    "front_hard_braking": {
+      "samples": 173,
+      "slip_p10_p50_p90": [
+        -0.1351,
+        -0.0284,
+        -0.0115
+      ]
+    },
+    "wheel_material_counts": {
+      "0": 10403,
+      "8": 44269
+    }
+  },
+  "extras": {
+    "front_brake": {
+      "samples": 965,
+      "field_usable": false,
+      "implausible_values": 19767,
+      "note": "pressure does not follow the lever: the game does not fill this field in this build",
+      "predicted_full_lever_kPa": 2515
+    },
+    "rear_brake": {
+      "samples": 47,
+      "field_usable": false,
+      "implausible_values": 0,
+      "note": "pressure does not follow the lever: the game does not fill this field in this build",
+      "predicted_full_lever_kPa": 4209
+    },
+    "rpm": {
+      "max": 13485,
+      "p999": 13482,
+      "cfg_limiter": 13400
+    },
+    "idle": {
+      "samples": 1730,
+      "median_rpm": 2305,
+      "cfg_idle_rpm": 2300
+    },
+    "steer": {
+      "max_abs_deg": 43.68,
+      "cfg_lock_deg": 42
+    },
+    "clutch_values": {
+      "p50": 0,
+      "max": 1
+    },
+    "engine_temp_c": {
+      "min": 56.7,
+      "max": 61.9
+    },
+    "crashes": 7
+  }
+}

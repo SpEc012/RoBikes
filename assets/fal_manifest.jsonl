@@ -1,0 +1,14 @@
+﻿{"request_id":"01a1421b-a690-78a2-985e-5d8d7d5e90b5","endpoint":"fal-ai/nano-banana-2","file":"bike_450.png","desc":"orange/white 450 MX, side profile"}
+{"request_id":"01a1421b-d4e7-75e2-832b-1515ee49ff3d","endpoint":"fal-ai/nano-banana-2","file":"rider_fullkit.png","desc":"rider full kit (has stray logo - to clean)"}
+{"request_id":"01a1421c-0547-7051-9055-e6d260f01064","endpoint":"fal-ai/nano-banana-2","file":"helmet.png","desc":"full-face helmet + goggles"}
+{"request_id":"01a1421c-34d9-7f43-86b3-366ce69df4ca","endpoint":"fal-ai/nano-banana-2","file":"boots.png","desc":"MX boots (has stray logo - to clean)"}
+{"request_id":"01a14221-0487-7331-99d8-eac27d2e0a58","endpoint":"fal-ai/trellis-2","file":"models/bike_450.glb"}
+{"request_id":"01a14221-0488-7ea3-a030-a27a06cc5e15","endpoint":"fal-ai/trellis-2","file":"models/helmet.glb"}
+{"request_id":"01a14221-0487-7da0-acae-fac0a5454250","endpoint":"fal-ai/trellis-2","file":"models/rider_fullkit.glb"}
+{"request_id":"01a14221-0487-7910-848a-f1f7793e353a","endpoint":"fal-ai/trellis-2","file":"models/boots.glb"}
+{"request_id":"01a14227-1b67-7e13-9280-73e46b073a6d","endpoint":"fal-ai/meshy/rigging/multi-animation","file":"models/rigged/rider_rigged.fbx"}
+{"request_id":"01a14227-1b67-7e13-9280-73e46b073a6d","endpoint":"fal-ai/meshy/rigging/multi-animation","file":"models/rigged/rider_rigged.glb"}
+{"request_id":"01a14227-1b67-7e13-9280-73e46b073a6d","endpoint":"fal-ai/meshy/rigging/multi-animation","file":"models/rigged/anim_walking.fbx"}
+{"request_id":"01a14227-1b67-7e13-9280-73e46b073a6d","endpoint":"fal-ai/meshy/rigging/multi-animation","file":"models/rigged/anim_running.fbx"}
+{"request_id":"01a14227-1b67-7e13-9280-73e46b073a6d","endpoint":"fal-ai/meshy/rigging/multi-animation","file":"models/rigged/anim_36.fbx"}
+{"request_id":"01a14227-1b67-7e13-9280-73e46b073a6d","endpoint":"fal-ai/meshy/rigging/multi-animation","file":"models/rigged/anim_92.fbx"}
