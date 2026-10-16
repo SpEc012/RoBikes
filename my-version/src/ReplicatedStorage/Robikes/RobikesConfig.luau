@@ -13,7 +13,7 @@ local BikeData = require(script.Parent.BikeData)
 
 local Config = {}
 
-Config.STUDS_PER_METER = 3.5
+Config.STUDS_PER_METER = 1 / 0.28 -- [DESIGN, SPEC.md header] Roblox: 1 stud = 0.28 m (was 3.5)
 Config.GRAVITY = 9.81
 Config.AIR_DENSITY = 1.2
 Config.PHYSICS_HZ = 300 -- [MEAS] MX Bikes states land on a 10 ms grid, so its step divides 10 ms (1/240 doesn't)
@@ -42,6 +42,12 @@ Config.MaterialSurface = {
 	Snow = "soft soil", Glacier = "concrete", Ice = "concrete",
 }
 Config.DefaultSurface = "compact soil"
+
+-- Rear-wheel "roost" loss [DESIGN, tuned to SPEC.md §4 MEAS slip targets]: past ~5% slip a driven rear tyre on
+-- loose ground spends torque throwing dirt. Without it the saturating dirt tyre (p_Cx1 = 1) lets a full-throttle
+-- wheelspin carry over every upshift (RoBikes median slip 66% / 46% in 2nd / 3rd vs MEAS 6.9% / 4.1%).
+-- Extra wheel torque = k · bulldozing_factor · max(0, kappa − slip0) · Fz · R.
+Config.Roost = { k = 2, slip0 = 0.05 }
 
 ------------------------------------------------------------------------
 -- helpers

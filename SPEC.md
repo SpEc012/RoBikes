@@ -60,8 +60,9 @@ A bike is a table of the same groups MX Bikes uses [OBS]: `engine`, `gearbox`, `
 - Torque curve `Tfull(rps)` and closed-throttle curve `Tbrake(rps) ≤ 0`, where x = engine
   **revolutions per second** [OBS data, DERIVED unit: peak T·2π·x ≈ declared kW for all 5 bikes].
 - Engine torque `Te = θ·Tfull(rps) + (1−θ)·Tbrake(rps)`, where `θ` is the effective throttle [INF].
-- **Idle:** if RPM < IdleRPM then `θ = max(θ, IdleThrottle·k)`, with k ramping from 1 at IdleRPM−300 down to 0
-  at IdleRPM [DESIGN] [OBS values: IdleThrottle 0.073, IdleRPM 2300]. **Test:** idle settles at IdleRPM ± 20
+- **Idle:** a governor, `θ = max(θ, clamp(IdleThrottle·(1 + (IdleRPM − RPM)/150), 0, 1))` [DESIGN]
+  [OBS values: IdleThrottle 0.073, IdleRPM 2300]. A fixed IdleThrottle floor balances 60–110 rpm below IdleRPM with
+  these curves (and the 250 2-stroke near 1030), so it cannot meet the test. **Test:** idle settles at IdleRPM ± 20
   [MEAS: 2305 for IdleRPM 2300].
 - **Limiter:** above `Limiter` RPM, `θ = 0` until RPM drops 150 below it [DESIGN hysteresis] [OBS limiter values].
   **Test:** RPM peaks at most ~100 above the limiter [MEAS: 13,485 for a 13,400 limiter].
@@ -91,7 +92,8 @@ A bike is a table of the same groups MX Bikes uses [OBS]: `engine`, `gearbox`, `
   0.325 m [MEAS: RPM per m/s of rear wheel speed in gears 1–4 implies 0.3096–0.3103 m]. Front: r_eff ≈ 0.95 ×
   0.335 = 0.32 m [INF, same squash].
 - **Behavior tests** (clutch in, no wheelspin):
-  - 350xf, RPM per m/s of rear wheel speed: 670 / 545 / 446 / 382 / 316 in gears 1–5, ±1% [MEAS].
+  - 350xf, RPM per m/s of rear wheel speed: 670 / 545 / 446 / 382 / 316 in gears 1–5, ±1% [MEAS] (5th ±1.5%: it
+    implies r_eff 0.3134 m from only 556 samples, and its measured step from 4th is 1.210 vs the cfg 1.197).
   - 450F, top gear at the limiter with r_eff 0.31: 11600/60·2π / 10.024 · 0.31 ≈ 37.6 m/s (135 km/h) on flat ground
     with no drag [DERIVED from MEAS].
 
@@ -130,6 +132,10 @@ public formulas]. With `dfz = (Fz − Fz0)/Fz0` and `μs` = surface grip:
 - **Rolling resistance:** `Fr = q_sy1·Fz·resistance(surface)`, against the rolling direction [INF].
 
 **Surface grip** `μs = dry_grip` (or `wet_grip` when wet), per surface [OBS table, 13 surfaces].
+
+**Roost loss** [DESIGN, tuned to the MEAS slip targets below]: a driven rear tyre past 5% slip gets an extra
+resisting wheel torque `2·bulldozing_factor·(κ − 0.05)·Fz·R`. With the saturating dirt tyre (p_Cx1 = 1) a 1st-gear
+wheelspin otherwise survives every upshift (median slip 66% / 46% in 2nd / 3rd on a flat full-throttle pull).
 
 **Edge cases:**
 - Fz = 0 gives zero force.
