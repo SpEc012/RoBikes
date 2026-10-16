@@ -30,14 +30,6 @@ local PALETTE = {
 	["450xf"] = Color3.fromRGB(220, 50, 40),
 	["450sm"] = Color3.fromRGB(150, 60, 200),
 }
--- mesh-bike colour per bike (BikeModelData.colourMaps keys), matching PALETTE
-local MESH_COLOUR = {
-	["250x"] = "yellow",
-	["250xf"] = "blue",
-	["350xf"] = "green",
-	["450xf"] = "red",
-	["450sm"] = "purple",
-}
 local BLACK = Color3.fromRGB(25, 25, 28)
 local DARK = Color3.fromRGB(55, 55, 60)
 local METAL = Color3.fromRGB(165, 168, 175)
@@ -62,6 +54,15 @@ local function newPart(model, name, shape, sizeM, color, material, transparency)
 	p.Parent = model
 	return p
 end
+
+-- mesh-bike colour per bike (BikeModelData.colourMaps keys), matching PALETTE
+local MESH_COLOUR = {
+	["250x"] = "yellow",
+	["250xf"] = "blue",
+	["350xf"] = "green",
+	["450xf"] = "red",
+	["450sm"] = "purple",
+}
 
 -- colour (optional): a BikeModelData.colourMaps key for the mesh bike; defaults to the bike's own colour
 function BikeRenderer.new(bikeSpec, parent, name, colour)
@@ -326,9 +327,16 @@ function BikeRenderer:update(state)
 		local lat, long = (state.riderLat or 0) * S, (state.riderLong or 0) * S
 		local leanAngle = -(state.riderLat or 0) * 1.6 -- lean the body into the shift
 		local pitchAngle = -(state.riderLong or 0) * 1.2
+		-- air pose: stand on the pegs in the air; in a whip the bike is thrown out from under the rider, so
+		-- the body twists back toward the path and hangs off the high side (smoothed, so it reads as effort)
+		local k = math.clamp((state.dt or 1 / 60) * 10, 0, 1)
+		self.airVis = (self.airVis or 0) + ((state.airborne and 1 or 0) - (self.airVis or 0)) * k
+		self.whipVis = (self.whipVis or 0) + ((state.whip or 0) - (self.whipVis or 0)) * k
+		local wv, av = self.whipVis, self.airVis
+		local stand = av * 0.10 * S
 		riderBase = bodyCF
-			* CFrame.new(self.seat + Vector3.new(lat * 0.6, 0, -long * 0.6))
-			* CFrame.Angles(pitchAngle, 0, leanAngle)
+			* CFrame.new(self.seat + Vector3.new(lat * 0.6 + wv * 0.10 * S, stand, -long * 0.6))
+			* CFrame.Angles(pitchAngle - av * 0.15, wv * 0.55, leanAngle + wv * 0.45)
 			* CFrame.new(-self.seat)
 	end
 	for _, it in ipairs(self.riderItems) do
@@ -337,6 +345,11 @@ function BikeRenderer:update(state)
 	if self.rig then
 		-- hands on the (steered) grips, boots on the pegs, expressed in rider space so they hold through the lean
 		local t = self.rigTargets
+		-- in a whip the knee on the low side drives the bike down and out (rider space, studs)
+		self.kneeBase = self.kneeBase or { t.kneeL, t.kneeR }
+		local wv = (not state.crashed) and (self.whipVis or 0) or 0
+		t.kneeL = self.kneeBase[1] + Vector3.new(math.min(wv, 0) * 0.18 * S, -math.abs(wv) * 0.05 * S, 0)
+		t.kneeR = self.kneeBase[2] + Vector3.new(math.max(wv, 0) * 0.18 * S, -math.abs(wv) * 0.05 * S, 0)
 		local toRider = riderBase:Inverse() * bodyCF
 		t.gripL, t.gripR = toRider * (steerCF * self.rigGrips[1]), toRider * (steerCF * self.rigGrips[2])
 		t.ankleL, t.ankleR = toRider * self.rigPegs[1], toRider * self.rigPegs[2]
@@ -344,6 +357,29 @@ function BikeRenderer:update(state)
 	end
 
 	workspace:BulkMoveTo(parts, cfs, Enum.BulkMoveMode.FireCFrameChanged)
+
+	-- dev aid: with workspace attribute RobikesDebug = true, the local bike publishes live physics telemetry as
+	-- attributes on its model, so Studio tools (which can't see the client's script state) can read a real ride
+	local sim = state.sim
+	if sim and workspace:GetAttribute("RobikesDebug") then
+		local m, t = self.model, sim.telemetry
+		m:SetAttribute("speed", t.speed)
+		m:SetAttribute("roll", t.roll)
+		m:SetAttribute("targetRoll", math.deg(sim.targetRoll or 0))
+		m:SetAttribute("steerDeg", math.deg(sim.steer or 0))
+		m:SetAttribute("pitch", t.pitch)
+		m:SetAttribute("gear", t.gear)
+		m:SetAttribute("contacts", t.contacts)
+		m:SetAttribute("crashed", t.crashed)
+		m:SetAttribute("crashReason", sim.crashReason or "")
+		m:SetAttribute("slipF", sim.wheels[1].alpha and math.deg(sim.wheels[1].alpha) or 0)
+		m:SetAttribute("slipR", sim.wheels[2].alpha and math.deg(sim.wheels[2].alpha) or 0)
+		m:SetAttribute("kappaR", sim.wheels[2].kappa or 0)
+		m:SetAttribute("surface", sim.wheels[2].surface or "")
+		m:SetAttribute("aid", sim.assists.balanceAssist or -1)
+		m:SetAttribute("tc", sim.tcScale or 1)
+		m:SetAttribute("time", sim.time)
+	end
 end
 
 -- Helmet-cam position (studs) for the camera module

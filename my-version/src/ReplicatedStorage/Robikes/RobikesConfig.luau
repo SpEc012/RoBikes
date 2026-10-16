@@ -13,7 +13,7 @@ local BikeData = require(script.Parent.BikeData)
 
 local Config = {}
 
-Config.STUDS_PER_METER = 3.5
+Config.STUDS_PER_METER = 1 / 0.28 -- [DESIGN, SPEC.md header] Roblox: 1 stud = 0.28 m (was 3.5)
 Config.GRAVITY = 9.81
 Config.AIR_DENSITY = 1.2
 Config.PHYSICS_HZ = 300 -- [MEAS] MX Bikes states land on a 10 ms grid, so its step divides 10 ms (1/240 doesn't)
@@ -21,12 +21,45 @@ Config.MAX_SUBSTEPS = 30 -- cap per frame so a lag spike can't explode the sim
 Config.DEFAULT_BIKE = "450xf"
 Config.BIKE_ORDER = { "250x", "250xf", "350xf", "450xf", "450sm" }
 
--- Player-facing assists (toggle in game). balanceAssist 1 = arcade-stable, 0 = hardcore.
+-- Player-facing assists (toggle in game). balanceAssist 1 = arcade-stable, 0 = hardcore (the full MX Bikes feel).
+-- balanceAssist also scales the other forgiving aids in BikePhysics: a lean target kept inside the grip limit,
+-- a balance hold that keeps the bike up at walking pace, loop-out protection and the landing straightener.
+-- tractionControl trims throttle when the rear tyre spins past a slip target.
 Config.Assists = {
 	autoClutch = true,
 	autoShift = true,
 	balanceAssist = 0.6,
 	antiWheelie = false,
+	tractionControl = true,
+}
+
+-- Aids tuning [DESIGN]. Each scales with balanceAssist (aid) unless noted.
+Config.Aids = {
+	holdK = 1.7, -- balance torque stiffness at aid 1, in units of m·g·h (1 = just cancels gravity's tip-over)
+	holdZeta = 0.8, -- damping ratio of that hold
+	leanMargin = 0.3, -- aid 1 asks for at most (1 − 0.3) of the grip-limited lean
+	tcSlip = { 0.25, 0.10 }, -- traction control slip target at aid 0 / aid 1 (halved at full lean)
+	loopPitchDeg = { 70, 38 }, -- wheelie angle where the loop-out guard starts cutting throttle, aid 0 / 1
+	spinGripKeep = 0.6, -- share of the side grip lost to wheelspin that the aid keeps (× aid)
+	sideGrip = 0.25, -- extra side grip at aid 1 (× aid)
+	loopTorque = 1400, -- N·m nose-down the guard adds at full cut (the rider tapping the rear brake), × aid
+}
+
+-- Air and whips [DESIGN]: rider lean (arrows / rider stick) in the air throws the bike sideways (yaw + roll);
+-- letting go brings it back, and just before landing the aid lines the bike up with its path.
+Config.Air = {
+	pitchTorque = 150, -- N·m from rider pitch input
+	rollTorque = 0, -- N·m from steer input (steering in the air no longer rolls the bike: lean the rider to whip)
+	yawTorque = 25, -- N·m from steer input
+	whipYawMax = math.rad(70), -- full rider lean whips the nose this far across the direction of travel
+	whipRollMax = math.rad(55), -- ...and lays the bike over this far into it
+	whipK = 40, -- rad/s² per rad: how hard the rider throws the bike toward that attitude
+	whipZeta = 0.85, -- damping ratio of the throw and the return
+	whipRate = 5, -- rad/s the rider can move the whip target (a full throw takes ~0.25 s)
+	whipTorqueMax = 650, -- N·m the rider can put into the bike (limits how fast a whip builds)
+	returnK = 16, -- rad/s² per rad pulling yaw/roll back once released (× balance assist, at least × 0.5)
+	landAlign = 2.5, -- extra straightening in the last moments before touch-down (× balance assist)
+	gyroCancel = 0.85, -- share of the wheels' gyroscopic torque the rider cancels while airborne
 }
 
 -- Roblox material name -> MX surface name (MX surface grip comes from each tyre set's table) [DESIGN map]
@@ -42,6 +75,12 @@ Config.MaterialSurface = {
 	Snow = "soft soil", Glacier = "concrete", Ice = "concrete",
 }
 Config.DefaultSurface = "compact soil"
+
+-- Rear-wheel "roost" loss [DESIGN, tuned to SPEC.md §4 MEAS slip targets]: past ~5% slip a driven rear tyre on
+-- loose ground spends torque throwing dirt. Without it the saturating dirt tyre (p_Cx1 = 1) lets a full-throttle
+-- wheelspin carry over every upshift (RoBikes median slip 66% / 46% in 2nd / 3rd vs MEAS 6.9% / 4.1%).
+-- Extra wheel torque = k · bulldozing_factor · max(0, kappa − slip0) · Fz · R.
+Config.Roost = { k = 2, slip0 = 0.05 }
 
 ------------------------------------------------------------------------
 -- helpers
@@ -438,10 +477,12 @@ function Config.buildBike(id, setup)
 	bike.steer = {
 		lock = math.rad(d.steer.Lock or 42),
 		rate = 5.0, -- rad/s max steering speed
-		kp = 16, -- desired roll response (rad/s² per rad) — see SPEC §6
-		kd = 12, -- well damped: the rider shouldn't overshoot the lean he asked for
+		kp = 24, -- desired roll response (rad/s² per rad) — see SPEC §6
+		kd = 20, -- well damped: the rider shouldn't overshoot the lean he asked for
+		slideCatch = 0.85, -- share of the slide angle the rider steers into (opposite lock)
+		ki = 10, -- integral on lean error: tyre slip means the kinematic steer never quite holds the lean
 		maxLeanDeg = 50, -- design cap; the grip cap below usually wins
-		gripLeanFactor = 0.85, -- ask for at most atan(0.85 * lateral grip) of lean
+		gripLeanFactor = 0.8, -- ask for at most atan(0.8 * lateral grip) of lean
 	}
 	bike.rider = {
 		maxLat = 0.25,
@@ -462,8 +503,8 @@ function Config.buildBike(id, setup)
 	}
 	-- chassis collision / crash probe points, body frame relative to CoM (metres) [DESIGN]
 	bike.probes = {
-		{ name = "frontFender", pos = bodyPoint(1.10, 0.75), radius = 0.12, crashOnTouch = true },
-		{ name = "rearFender", pos = bodyPoint(-0.25, 0.90), radius = 0.12, crashOnTouch = true },
+		{ name = "frontFender", pos = bodyPoint(1.10, 0.75), radius = 0.12 }, -- fenders scrape on big compressions, not a crash,
+		{ name = "rearFender", pos = bodyPoint(-0.25, 0.90), radius = 0.12 },
 		{ name = "skidPlate", pos = bodyPoint(0.70, 0.28), radius = 0.08 },
 		{ name = "barLeft", pos = bodyPoint(1.02, 1.05) + Vector3.new(-0.40, 0, 0), radius = 0.06, crashOnTouch = true },
 		{ name = "barRight", pos = bodyPoint(1.02, 1.05) + Vector3.new(0.40, 0, 0), radius = 0.06, crashOnTouch = true },

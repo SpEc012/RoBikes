@@ -131,21 +131,39 @@ case("450F speed at the limiter per gear ~80/96/114/135 km/h (MEAS rolling radiu
 		local wheelW = bike.engine.limiterRPM * Drivetrain.RPM_TO_RAD / (d.primary * d.gears[g] * d.final)
 		local kmh = wheelW * bike.wheels[2].rollingRadius * 3.6
 		assert(approx(kmh, expect[g], 3), ("gear %d %.1f km/h"):format(g, kmh))
+		if g == #d.gears then
+			-- SPEC §3: 11600/60·2π / 10.024 · 0.31 ≈ 37.6 m/s in top gear
+			assert(approx(kmh / 3.6, 37.6, 0.4), ("top gear %.2f m/s"):format(kmh / 3.6))
+		end
 		table.insert(out, ("%d"):format(kmh))
 	end
 	return table.concat(out, " / ") .. " km/h"
 end)
 
-case("350F rpm per m/s per gear matches the MX Bikes recording (MEAS ±2%)", function()
+case("350F rpm per m/s per gear matches the MX Bikes recording (SPEC §3 MEAS ±1%, 5th ±1.5%)", function()
 	local bike = Config.buildBike("350xf")
 	local meas = { 670.1, 544.6, 445.9, 382.1, 315.9 }
 	local out = {}
 	for g, m in ipairs(meas) do
 		local rpm = Drivetrain.rpmForWheel(bike, g, 1 / bike.wheels[2].rollingRadius)
-		assert(math.abs(rpm - m) / m < 0.02, ("gear %d: %.1f vs %.1f"):format(g, rpm, m))
+		-- gears 1–4 fit r_eff 0.3096–0.3103 m; 5th implies 0.3134 m from few samples (analysis.md §4), so it gets 1.5%
+		local tol = (g <= 4) and 0.01 or 0.015
+		assert(math.abs(rpm - m) / m < tol, ("gear %d: %.1f vs %.1f"):format(g, rpm, m))
 		table.insert(out, ("%.0f"):format(rpm))
 	end
 	return table.concat(out, " / ") .. " rpm per m/s"
+end)
+
+case("rolling radius: rear 0.31 m, front ~0.32 m (SPEC §3 MEAS)", function()
+	for _, id in ipairs(Config.BIKE_ORDER) do
+		local bike = Config.buildBike(id)
+		if bike.tyreType == "mx" then
+			assert(approx(bike.wheels[2].rollingRadius, 0.31, 0.002), id .. " rear " .. bike.wheels[2].rollingRadius)
+			assert(approx(bike.wheels[1].rollingRadius, 0.32, 0.005), id .. " front " .. bike.wheels[1].rollingRadius)
+		end
+	end
+	local b = Config.buildBike("350xf")
+	return ("rear %.3f m, front %.3f m"):format(b.wheels[2].rollingRadius, b.wheels[1].rollingRadius)
 end)
 
 case("money-shift protection refuses an over-rev downshift", function()
@@ -166,6 +184,28 @@ case("brake hydraulics: 450F front full lever ~2515 kPa / ~392 N·m", function()
 	assert(approx(bike.brakes.frontKPa, 2515, 40), "kPa " .. bike.brakes.frontKPa)
 	assert(approx(bike.brakes.frontTorque, 392, 8), "Nm " .. bike.brakes.frontTorque)
 	return ("front %.0f kPa %.0f N·m, rear %.0f kPa %.0f N·m"):format(bike.brakes.frontKPa, bike.brakes.frontTorque, bike.brakes.rearKPa, bike.brakes.rearTorque)
+end)
+
+case("brake hydraulics: 450F rear full lever ~4209 kPa / ~556 N·m (SPEC §6)", function()
+	local bike = Config.buildBike("450xf")
+	assert(approx(bike.brakes.rearKPa, 4209, 40), "kPa " .. bike.brakes.rearKPa)
+	assert(approx(bike.brakes.rearTorque, 556, 8), "Nm " .. bike.brakes.rearTorque)
+	return ("rear %.0f kPa %.0f N·m"):format(bike.brakes.rearKPa, bike.brakes.rearTorque)
+end)
+
+case("steering lock 42° (SPEC §6 MEAS p99 ±42.03°)", function()
+	for _, id in ipairs(Config.BIKE_ORDER) do
+		local lock = math.deg(Config.buildBike(id).steer.lock)
+		assert(approx(lock, 42, 0.5), id .. " lock " .. lock)
+	end
+	return "42° on all bikes"
+end)
+
+case("fixed step divides both 10 ms and a 60 Hz frame (SPEC §10 MEAS 10 ms grid)", function()
+	local hz = Config.PHYSICS_HZ
+	assert(hz % 100 == 0 and hz % 60 == 0, "PHYSICS_HZ " .. hz)
+	assert(approx(Config.STUDS_PER_METER, 1 / 0.28, 1e-9), "STUDS_PER_METER " .. Config.STUDS_PER_METER)
+	return ("%d Hz: %d steps per 10 ms, %d per frame"):format(hz, hz / 100, hz / 60)
 end)
 
 ---------------------------------------------------------------- tyres
@@ -210,6 +250,13 @@ case("camber thrust pushes toward the lean; slip pushes against the slide", func
 end)
 
 ---------------------------------------------------------------- suspension
+case("preload shortens the stroke: 350F fork tops out at 0.291 m, shock at 0.108 m (SPEC §5 MEAS)", function()
+	local bike = Config.buildBike("350xf")
+	assert(approx(bike.fork.travel, 0.291, 0.0005), "fork " .. bike.fork.travel)
+	assert(approx(bike.shock.stroke, 0.108, 0.0005), "shock " .. bike.shock.stroke)
+	return ("fork %.3f m, shock %.3f m"):format(bike.fork.travel, bike.shock.stroke)
+end)
+
 case("3-stage damper is continuous and monotonic; more clicks = more force", function()
 	local c = { 2360, 370, 1500 }
 	local d = BikePhysics.damper3
@@ -226,12 +273,12 @@ case("3-stage damper is continuous and monotonic; more clicks = more force", fun
 	return "ok"
 end)
 
-case("M1 static sag ≈ MX Bikes recording (fork ~63 mm, shock shaft ~28 mm)", function()
+case("M1 static sag ≈ MX Bikes recording (SPEC §5 MEAS fork 63 mm, shock shaft 28 mm, ±10 mm)", function()
 	local sim = newBike("350xf", { assists = { balanceAssist = 1 } })
 	run(sim, 4, input(), flatGround())
 	local t = sim.telemetry
-	assert(t.forkTravel > 0.045 and t.forkTravel < 0.080, ("fork sag %.3f"):format(t.forkTravel))
-	assert(t.shockShaft > 0.020 and t.shockShaft < 0.037, ("shaft sag %.3f"):format(t.shockShaft))
+	assert(approx(t.forkTravel, 0.063, 0.010), ("fork sag %.3f"):format(t.forkTravel))
+	assert(approx(t.shockShaft, 0.028, 0.010), ("shaft sag %.3f"):format(t.shockShaft))
 	assert(sim.vel.Magnitude < 0.05 and not sim.crashed, "settled")
 	return ("fork %.0f mm, shock shaft %.0f mm (rear wheel %.0f mm)"):format(t.forkTravel * 1000, t.shockShaft * 1000, sim.wheels[2].comp * 1000)
 end)
@@ -255,16 +302,45 @@ case("M1 drop from 2 m: settles, no sinking, no endless bounce, no crash", funct
 end)
 
 ---------------------------------------------------------------- M2 powertrain
-case("M2 neutral + full throttle: revs to the limiter, bike stays put", function()
-	local sim = newBike("450xf", { assists = { balanceAssist = 1, autoShift = false } })
-	sim.engine.gear = 0
-	local maxRpm = 0
-	run(sim, 3, input({ throttle = 1 }), flatGround(), function(s)
-		maxRpm = math.max(maxRpm, s.telemetry.rpm)
-	end)
-	assert(approx(maxRpm, sim.bike.engine.limiterRPM, 400), "max rpm " .. maxRpm)
-	assert(sim.vel.Magnitude < 0.2, "moved " .. sim.vel.Magnitude)
-	return ("max %.0f rpm, speed %.2f m/s"):format(maxRpm, sim.vel.Magnitude)
+case("M2 neutral + full throttle: limiter overshoot < 100 rpm, bike stays put (SPEC §3 MEAS 13,485 / 13,400)", function()
+	local out = {}
+	for _, id in ipairs({ "350xf", "450xf" }) do
+		local sim = newBike(id, { assists = { balanceAssist = 1, autoShift = false } })
+		sim.engine.gear = 0
+		local maxRpm = 0
+		run(sim, 3, input({ throttle = 1 }), flatGround(), function(s)
+			maxRpm = math.max(maxRpm, s.telemetry.rpm)
+		end)
+		local lim = sim.bike.engine.limiterRPM
+		assert(maxRpm >= lim and maxRpm <= lim + 100, ("%s max rpm %.0f, limiter %d"):format(id, maxRpm, lim))
+		assert(sim.vel.Magnitude < 0.2, "moved " .. sim.vel.Magnitude)
+		table.insert(out, ("%s %.0f/%d rpm"):format(id, maxRpm, lim))
+	end
+	return table.concat(out, ", ")
+end)
+
+case("M2 idle settles at IdleRPM ± 20 after a blip, every bike (SPEC §3 MEAS 2305 for 2300)", function()
+	local out = {}
+	for _, id in ipairs(Config.BIKE_ORDER) do
+		local sim = newBike(id, { assists = { balanceAssist = 1, autoShift = false } })
+		sim.engine.gear = 0
+		run(sim, 1, input(), flatGround())
+		run(sim, 0.5, input({ throttle = 1 }), flatGround())
+		run(sim, 5, input(), flatGround())
+		local idle = sim.bike.engine.idleRPM
+		assert(sim.engine.running and approx(sim.telemetry.rpm, idle, 20), ("%s %.0f rpm vs %d"):format(id, sim.telemetry.rpm, idle))
+		table.insert(out, ("%s %.0f"):format(id, sim.telemetry.rpm))
+	end
+	return table.concat(out, " ")
+end)
+
+case("M2 stopping in gear with the clutch out stalls the engine (SPEC §3 MEAS rpm ≈ 0)", function()
+	local sim = newBike("350xf", { assists = { balanceAssist = 1, autoShift = false, autoClutch = false } })
+	run(sim, 1, input({ clutch = 1 }), flatGround())
+	run(sim, 3, input({ frontBrake = 1, rearBrake = 1 }), flatGround())
+	assert(not sim.engine.running, "still running at " .. sim.telemetry.rpm)
+	assert(sim.telemetry.rpm < 100, "rpm " .. sim.telemetry.rpm)
+	return ("stalled, %.0f rpm"):format(sim.telemetry.rpm)
 end)
 
 case("M2 full brakes at standstill in gear: no creep", function()
@@ -399,6 +475,149 @@ case("M4 rear brake in the air dips the nose (wheel reaction torque)", function(
 	return ("pitch rate %.2f rad/s nose-down"):format(rate)
 end)
 
+---------------------------------------------------------------- handling aids and whips
+-- keyboard-like input: keys ramp the way BikeController smooths them (steer 3.5/s, throttle 6/s)
+local function keyboard(script)
+	local s = { thr = 0, steer = 0 }
+	return function(t)
+		local kThr, kSteer, extra = script(t)
+		local function ramp(cur, target, rate)
+			return cur + math.clamp(target - cur, -rate * DT, rate * DT)
+		end
+		s.thr = ramp(s.thr, kThr, 6)
+		s.steer = ramp(s.steer, kSteer, (math.abs(kSteer) > math.abs(s.steer)) and 3.5 or 6)
+		local i = input({ throttle = s.thr, steer = s.steer })
+		for k, v in pairs(extra or {}) do
+			i[k] = v
+		end
+		return i
+	end
+end
+
+case("aids: full keyboard steer held at 8 and 15 m/s leans and turns without falling", function()
+	local out = {}
+	for _, v in ipairs({ 8, 15 }) do
+		local sim = newBike("450xf", { assists = { balanceAssist = 0.6 } })
+		local g = flatGround()
+		upToSpeed(sim, v, g)
+		local maxRoll = 0
+		run(sim, 4, keyboard(function()
+			return 0.3, 1
+		end), g, function(s)
+			maxRoll = math.max(maxRoll, math.abs(s.roll))
+		end)
+		assert(not sim.crashed, ("crashed at %d m/s (%s)"):format(v, tostring(sim.crashReason)))
+		assert(maxRoll > math.rad(15) and maxRoll < math.rad(40), ("max lean %.0f°"):format(math.deg(maxRoll)))
+		table.insert(out, ("%d m/s: lean %.0f°"):format(v, math.deg(maxRoll)))
+	end
+	return table.concat(out, ", ")
+end)
+
+case("aids: lean comes back upright after a steer tap at speed", function()
+	local sim = newBike("450xf", { assists = { balanceAssist = 0.6 } })
+	local g = flatGround()
+	upToSpeed(sim, 20, g)
+	run(sim, 4, keyboard(function(t)
+		return 0.4, (t < 0.3) and 1 or 0
+	end), g)
+	assert(not sim.crashed)
+	assert(math.abs(sim.roll) < math.rad(4), ("still leaning %.1f°"):format(math.deg(sim.roll)))
+	return ("lean %.1f° after 4 s"):format(math.deg(sim.roll))
+end)
+
+case("aids: parked and walking pace on an 8° hill with steer, the bike stays up", function()
+	local sim = newBike("350xf", { assists = { balanceAssist = 0.6 }, spawn = CFrame.Angles(math.rad(8), 0, 0) })
+	local n = Vector3.new(0, math.cos(math.rad(8)), math.sin(math.rad(8)))
+	local hill = function(o, d, len)
+		local dn = d:Dot(n)
+		if dn >= -1e-6 then
+			return nil
+		end
+		local t = -o:Dot(n) / dn
+		if t < 0 or t > len then
+			return nil
+		end
+		return t, n, "soil"
+	end
+	run(sim, 4, input({ throttle = 0.4, steer = 0.5 }), hill)
+	assert(not sim.crashed, tostring(sim.crashReason))
+	return ("%.1f m/s, lean %.0f°"):format(sim.vel.Magnitude, math.deg(sim.roll))
+end)
+
+case("aids: traction control keeps launch wheelspin under the slip target", function()
+	local function launch(tc)
+		local sim = newBike("450xf", { assists = { balanceAssist = 0.6, tractionControl = tc } })
+		local maxSlip = 0
+		run(sim, 2, input({ throttle = 1 }), flatGround(), function(s, t)
+			if t > 0.3 then
+				maxSlip = math.max(maxSlip, s.wheels[2].kappa)
+			end
+		end)
+		return maxSlip
+	end
+	local on, off = launch(true), launch(false)
+	assert(on < 0.2, ("slip with TC %.2f"):format(on))
+	assert(on <= off, "TC made it worse")
+	return ("max slip %.2f with TC, %.2f without"):format(on, off)
+end)
+
+case("aids: loop-out guard stops a full-throttle lean-back wheelie flipping over", function()
+	local sim = newBike("350xf", { assists = { balanceAssist = 0.6 } })
+	local maxPitch = 0
+	run(sim, 4, input({ throttle = 1, riderPitch = -1 }), flatGround(), function(s)
+		maxPitch = math.max(maxPitch, s.telemetry.pitch)
+	end)
+	assert(not sim.crashed, tostring(sim.crashReason))
+	assert(maxPitch < 75, ("pitch %.0f°"):format(maxPitch))
+	return ("max wheelie %.0f°"):format(maxPitch)
+end)
+
+local function jumpBike(assist)
+	local sim = newBike("450xf", { assists = { balanceAssist = assist } })
+	sim.pos = Vector3.new(0, 2.5, 0)
+	sim.vel = Vector3.new(0, 7, -16)
+	sim.prevVel = sim.vel
+	sim.wheels[1].omega, sim.wheels[2].omega = 50, 52
+	sim.rot = CFrame.Angles(math.rad(24), 0, 0)
+	return sim
+end
+
+case("whip: rider lean throws the bike sideways in the air, released it lands square", function()
+	local sim = jumpBike(0.6)
+	local maxYaw, landYaw, landed = 0, nil, false
+	run(sim, 3, function(t)
+		return input({ throttle = 0.3, riderLean = (t < 0.6) and 1 or 0 })
+	end, flatGround(), function(s)
+		if s.contacts == 0 then
+			maxYaw = math.max(maxYaw, s.airYaw)
+			landYaw = s.airYaw
+		elseif not landed and s.time > 0.3 then
+			landed = true
+		end
+	end)
+	assert(maxYaw > math.rad(50), ("whip only %.0f°"):format(math.deg(maxYaw)))
+	assert(landed and not sim.crashed, tostring(sim.crashReason))
+	assert(math.abs(landYaw) < math.rad(25), ("landed %.0f° crossed up"):format(math.deg(landYaw)))
+	return ("whip %.0f°, landed %.0f° off straight"):format(math.deg(maxYaw), math.deg(landYaw))
+end)
+
+case("whip: the nose stays up through a whip (no dive) and a whip held into the landing crashes", function()
+	local sim = jumpBike(0.6)
+	local minPitch = 90
+	run(sim, 1.4, function(t)
+		return input({ throttle = 0.3, riderLean = (t < 0.4) and -1 or ((t < 0.8) and 1 or 0) })
+	end, flatGround(), function(s)
+		if s.contacts == 0 then
+			minPitch = math.min(minPitch, s.telemetry.pitch)
+		end
+	end)
+	assert(minPitch > -15, ("nose dived to %.0f°"):format(minPitch))
+	local held = jumpBike(0.3)
+	run(held, 3, input({ throttle = 0.3, riderLean = 1 }), flatGround())
+	assert(held.crashed, "held whip landed sideways and rode away")
+	return ("lowest pitch %.0f°; held whip: %s"):format(minPitch, tostring(held.crashReason))
+end)
+
 ---------------------------------------------------------------- robustness
 case("large time step stays finite", function()
 	local sim = newBike("450xf")
@@ -410,14 +629,24 @@ case("large time step stays finite", function()
 	return "finite"
 end)
 
--- Calibration report: RoBikes vs the MX Bikes recording (350XF, Winchester, dirt) — full-throttle pull.
--- MEAS medians per gear: slip 15.3 / 6.9 / 4.1 / 2.3 / 2.6 %, forward accel 0.61 / 0.59 / 0.50 / 0.43 / 0.37 G.
-function Tests.calibrate(opts)
+-- RoBikes vs the MX Bikes recording (350XF, Winchester, dirt) — full-throttle pull from rest.
+-- SPEC §4 MEAS medians per gear: slip 15.3 / 6.9 / 4.1 / 2.3 / 2.6 %, forward accel 0.61 / 0.59 / 0.50 / 0.43 / 0.37 G.
+-- (5th is not compared: the recording only reaches 5th at track speeds, the flat pull reaches it near top speed.)
+local MEAS_PULL = {
+	slip = { 15.3, 6.9, 4.1, 2.3, 2.6 },
+	accel = { 0.614, 0.586, 0.502, 0.427, 0.374 },
+}
+
+local function median(t)
+	if #t == 0 then
+		return 0 / 0
+	end
+	table.sort(t)
+	return t[math.floor(#t / 2) + 1]
+end
+
+local function fullThrottlePull(opts)
 	opts = opts or {}
-	local MEAS = {
-		slip = { 15.3, 6.9, 4.1, 2.3, 2.6 },
-		accel = { 0.614, 0.586, 0.502, 0.427, 0.374 },
-	}
 	local sim = newBike("350xf", { assists = { balanceAssist = 0.6, antiWheelie = opts.antiWheelie or false } })
 	local g = flatGround(opts.surface or "soil")
 	run(sim, 1, input(), g)
@@ -434,18 +663,36 @@ function Tests.calibrate(opts)
 			table.insert(per[gear].accel, a)
 		end
 	end)
-	local function median(t)
-		if #t == 0 then
-			return 0 / 0
-		end
-		table.sort(t)
-		return t[math.floor(#t / 2) + 1]
+	local res = { sim = sim }
+	for gi, p in pairs(per) do
+		res[gi] = { slip = median(p.slip), accel = median(p.accel), n = #p.slip }
 	end
+	return res
+end
+
+case("M5 full-throttle pull on dirt: slip within 5 pts and accel within 0.1 G of the recording, gears 1–4 (SPEC §4 MEAS)", function()
+	local r = fullThrottlePull()
+	assert(not r.sim.crashed, "crashed")
+	local out = {}
+	for g = 1, 4 do
+		local p = r[g]
+		assert(p and p.n > 50, "too few samples in gear " .. g)
+		assert(math.abs(p.slip - MEAS_PULL.slip[g]) <= 5, ("gear %d slip %.1f%% vs %.1f%%"):format(g, p.slip, MEAS_PULL.slip[g]))
+		assert(math.abs(p.accel - MEAS_PULL.accel[g]) <= 0.1, ("gear %d accel %.2f G vs %.2f G"):format(g, p.accel, MEAS_PULL.accel[g]))
+		table.insert(out, ("%d: %.1f%% %.2fG"):format(g, p.slip, p.accel))
+	end
+	return table.concat(out, ", ")
+end)
+
+-- Calibration report (all 5 gears), printed side by side with the recording.
+function Tests.calibrate(opts)
+	local r = fullThrottlePull(opts)
+	local sim = r.sim
 	local lines = { "gear | RoBikes slip % | MX slip % | RoBikes accel G | MX accel G | samples" }
 	for gi = 1, 5 do
-		local p = per[gi]
+		local p = r[gi]
 		if p then
-			table.insert(lines, ("%d | %.1f | %.1f | %.2f | %.2f | %d"):format(gi, median(p.slip), MEAS.slip[gi], median(p.accel), MEAS.accel[gi], #p.slip))
+			table.insert(lines, ("%d | %.1f | %.1f | %.2f | %.2f | %d"):format(gi, p.slip, MEAS_PULL.slip[gi], p.accel, MEAS_PULL.accel[gi], p.n))
 		end
 	end
 	table.insert(lines, ("final speed %.1f m/s, crashed %s"):format(sim.vel.Magnitude, tostring(sim.crashed)))
