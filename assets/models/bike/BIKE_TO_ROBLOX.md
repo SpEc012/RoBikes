@@ -46,3 +46,19 @@ Rebuild after changing the mesh (`pip install bpy` first):
 
 **Not yet tested inside Studio.** The split and pivots were checked in Blender renders, and the code compiles with the
 Luau compiler.
+
+## Colours
+
+`colours/` has the bike's colour map in seven colours: orange (original), red, blue, green, yellow, purple and black.
+`tools/recolour_bike.py` makes them by moving the orange plastics and rims to another hue; white, black and metal parts
+stay as they are. `colours/preview_all_colours.png` shows all seven.
+
+Each bike gets its own colour by default: 250X yellow, 250XF blue, 350XF green, 450XF red, 450SM purple
+(`MESH_COLOUR` in `BikeRenderer.luau`). To use a colour in game:
+
+1. In Studio, upload `colours/bike_450_colour_<name>.png` as an image (Asset Manager › Bulk Import, or any
+   Decal/Texture field), copy its `rbxassetid://…` id.
+2. Paste it into `colourMaps.<name>` in `BikeModelData.luau` and sync. A colour left as `""` keeps the imported texture.
+
+A menu picker can pass any `colourMaps` key as the fourth argument: `BikeRenderer.new(spec, parent, name, "blue")`, or
+call `renderer.mesh:setColour("blue")` on a live bike.

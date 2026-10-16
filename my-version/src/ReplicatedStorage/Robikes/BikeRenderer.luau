@@ -30,6 +30,14 @@ local PALETTE = {
 	["450xf"] = Color3.fromRGB(220, 50, 40),
 	["450sm"] = Color3.fromRGB(150, 60, 200),
 }
+-- mesh-bike colour per bike (BikeModelData.colourMaps keys), matching PALETTE
+local MESH_COLOUR = {
+	["250x"] = "yellow",
+	["250xf"] = "blue",
+	["350xf"] = "green",
+	["450xf"] = "red",
+	["450sm"] = "purple",
+}
 local BLACK = Color3.fromRGB(25, 25, 28)
 local DARK = Color3.fromRGB(55, 55, 60)
 local METAL = Color3.fromRGB(165, 168, 175)
@@ -55,7 +63,8 @@ local function newPart(model, name, shape, sizeM, color, material, transparency)
 	return p
 end
 
-function BikeRenderer.new(bikeSpec, parent, name)
+-- colour (optional): a BikeModelData.colourMaps key for the mesh bike; defaults to the bike's own colour
+function BikeRenderer.new(bikeSpec, parent, name, colour)
 	local self = setmetatable({}, BikeRenderer)
 	self.spec = bikeSpec
 	local model = Instance.new("Model")
@@ -159,7 +168,7 @@ function BikeRenderer.new(bikeSpec, parent, name)
 	-- ---------- imported bike mesh (ReplicatedStorage.Bike450) replaces the parts above ----------
 	local bikeTemplate = ReplicatedStorage:FindFirstChild("Bike450")
 	if bikeTemplate then
-		self.mesh = BikeModel.new(bikeTemplate, model, S, com)
+		self.mesh = BikeModel.new(bikeTemplate, model, S, com, colour or MESH_COLOUR[bikeSpec.id])
 	end
 	if self.mesh then
 		for _, it in ipairs(self.items) do

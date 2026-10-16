@@ -24,8 +24,30 @@ local function rotBetween(a, b)
 	return CFrame.fromAxisAngle(a:Cross(b).Unit, math.acos(math.clamp(d, -1, 1)))
 end
 
+-- Swap every mesh part's texture for the named colour map from BikeModelData.colourMaps. A SurfaceAppearance would
+-- override TextureID, so it is removed. Returns false if that colour has no uploaded map.
+function BikeModel:setColour(colour)
+	local map = colour and Data.colourMaps[colour]
+	if not map or map == "" then
+		return false
+	end
+	for _, it in ipairs(self.parts) do
+		local p = it.part
+		if p:IsA("MeshPart") then
+			local sa = p:FindFirstChildOfClass("SurfaceAppearance")
+			if sa then
+				sa:Destroy()
+			end
+			p.TextureID = map
+		end
+	end
+	self.colour = colour
+	return true
+end
+
 -- template: the imported model. parent: the bike Model. S: studs per metre. com: { forward, up } of the bike spec.
-function BikeModel.new(template, parent, S, com)
+-- colour: optional key of BikeModelData.colourMaps.
+function BikeModel.new(template, parent, S, com, colour)
 	local self = setmetatable({}, BikeModel)
 	local model = template:Clone()
 	model.Name = "BikeMesh"
@@ -88,8 +110,9 @@ function BikeModel.new(template, parent, S, com)
 	self.forkPoint = B(Data.forkPoint[1], Data.forkPoint[2])
 	self.forkUp = Vector3.new(0, Data.forkUp[2], -Data.forkUp[1]).Unit
 	self.pivot = B(Data.swingarmPivot[1], Data.swingarmPivot[2])
-	model.Parent = parent
 	self.model = model
+	self:setColour(colour)
+	model.Parent = parent
 	return self
 end
 
