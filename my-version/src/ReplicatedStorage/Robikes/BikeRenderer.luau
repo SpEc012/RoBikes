@@ -1,6 +1,8 @@
 --!nonstrict
 --[[
 	BikeRenderer — original bike + rider made from plain Parts, moved kinematically every frame.
+	If ReplicatedStorage.RiderR15 exists, the imported R15 rider (RiderRig) replaces the plain-Parts rider, and if
+	ReplicatedStorage.Bike450 exists, the imported bike mesh (BikeModel) replaces the plain-Parts bike.
 	No MX Bikes meshes/textures are used. Physics is in metres; this module multiplies by
 	Config.STUDS_PER_METER and nothing else in the game does.
 
@@ -11,6 +13,10 @@
 ]]
 
 local Config = require(script.Parent.RobikesConfig)
+local RiderRig = require(script.Parent.RiderRig)
+local BikeModel = require(script.Parent.BikeModel)
+local BikeModelData = require(script.Parent.BikeModelData)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local BikeRenderer = {}
 BikeRenderer.__index = BikeRenderer
@@ -150,12 +156,55 @@ function BikeRenderer.new(bikeSpec, parent, name)
 		self.wheelParts[i] = parts
 	end
 
+	-- ---------- imported bike mesh (ReplicatedStorage.Bike450) replaces the parts above ----------
+	local bikeTemplate = ReplicatedStorage:FindFirstChild("Bike450")
+	if bikeTemplate then
+		self.mesh = BikeModel.new(bikeTemplate, model, S, com)
+	end
+	if self.mesh then
+		for _, it in ipairs(self.items) do
+			it.part:Destroy()
+		end
+		table.clear(self.items)
+		for _, wp in ipairs(self.wheelParts) do
+			for _, pair in ipairs(wp) do
+				pair[1]:Destroy()
+			end
+		end
+		table.clear(self.wheelParts)
+	end
+
 	-- ---------- rider (kinematic; tumbles as a unit when crashed) ----------
 	local jersey = team
 	local pants = Color3.fromRGB(40, 40, 48)
 	self.seat = B(0.56, 0.98)
 	self.riderItems = {}
+	-- imported R15 rider (ReplicatedStorage.RiderR15) if present, else the plain-Parts rider below
+	local riderTemplate = ReplicatedStorage:FindFirstChild("RiderR15")
+	if riderTemplate then
+		self.rig = RiderRig.new(riderTemplate, model, 1.8 * S)
+	end
+	if self.rig then
+		local L, R = -1, 1
+		self.rigTargets = {
+			hips = B(0.58, 1.10), hipLean = math.rad(20), torsoLean = math.rad(42), headUp = math.rad(30),
+			elbowL = B(0.95, 1.20, 0.45 * L), elbowR = B(0.95, 1.20, 0.45 * R),
+			kneeL = B(0.95, 0.85, 0.30 * L), kneeR = B(0.95, 0.85, 0.30 * R),
+		}
+		self.rigGrips = { B(1.02, 1.08, 0.33 * L), B(1.02, 1.08, 0.33 * R) } -- wrists, just inboard of the grips
+		if self.mesh then
+			-- sit on and hold the mesh's own seat and bars
+			local g = BikeModelData.grip
+			self.rigTargets.hips = B(0.58, BikeModelData.seatTop + 0.11)
+			self.rigGrips = { B(g[1] - 0.03, g[2] - 0.02, (g[3] - 0.07) * L), B(g[1] - 0.03, g[2] - 0.02, (g[3] - 0.07) * R) }
+		end
+		self.rigPegs = { B(0.56, 0.43, 0.22 * L), B(0.56, 0.43, 0.22 * R) } -- ankles, above the pegs
+	end
+	local rider = self.rig == nil
 	local function rpart(name_, shape, sizeM, color, cf, material)
+		if not rider then
+			return nil
+		end
 		local p = newPart(model, name_, shape, sizeM, color, material)
 		table.insert(self.riderItems, { part = p, cf = cf })
 		return p
@@ -204,6 +253,10 @@ function BikeRenderer:update(state)
 	-- steering frame: rotate about the rake axis through the head (right = negative about the up-axis)
 	local axisUp = -self.forkDown
 	local steerCF = CFrame.new(self.head) * CFrame.fromAxisAngle(axisUp, -(state.steer or 0)) * CFrame.new(-self.head)
+	if self.mesh then
+		steerCF = self.mesh:steerCF(state.steer)
+		self.mesh:update(bodyCF, state, spec, put)
+	end
 
 	-- wheel centres (body frame, studs)
 	local wf, wr = state.wheels[1], state.wheels[2]
@@ -271,6 +324,14 @@ function BikeRenderer:update(state)
 	end
 	for _, it in ipairs(self.riderItems) do
 		put(it.part, riderBase * it.cf)
+	end
+	if self.rig then
+		-- hands on the (steered) grips, boots on the pegs, expressed in rider space so they hold through the lean
+		local t = self.rigTargets
+		local toRider = riderBase:Inverse() * bodyCF
+		t.gripL, t.gripR = toRider * (steerCF * self.rigGrips[1]), toRider * (steerCF * self.rigGrips[2])
+		t.ankleL, t.ankleR = toRider * self.rigPegs[1], toRider * self.rigPegs[2]
+		self.rig:pose(riderBase, t, put)
 	end
 
 	workspace:BulkMoveTo(parts, cfs, Enum.BulkMoveMode.FireCFrameChanged)

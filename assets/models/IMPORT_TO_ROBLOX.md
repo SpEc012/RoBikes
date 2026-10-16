@@ -1,5 +1,9 @@
 # Importing the Robikes 3D models into Roblox
 
+**Game-ready versions:** the rider is `rigged/rider_r15.fbx` (R15, logo removed, see `rigged/RIG_TO_ROBLOX.md`) and
+the bike is `bike/bike_450_parts.fbx` (split into moving parts, see `bike/BIKE_TO_ROBLOX.md`). Both are FBX and import
+directly. The notes below are about the raw generated `.glb` files.
+
 Files: `bike_450.glb`, `helmet.glb`, `rider_fullkit.glb`, `boots.glb` (textured GLB from Trellis 2).
 
 ## Roblox needs FBX or OBJ, not GLB — convert first (free, ~2 min)
@@ -15,8 +19,8 @@ Roblox Studio's **Import 3D** accepts `.fbx` and `.obj`, not `.glb`. Convert eac
 ## Notes
 - **Triangle budget:** these are ~12k verts. If the importer rejects a mesh for exceeding Roblox's per-MeshPart triangle limit, add a **Decimate** modifier in Blender and bring it under ~10k tris, then re-export.
 - **Scale:** resize after import to real size. With `STUDS_PER_METRE = 3.5`: bike ≈ 7.3 studs long, rider ≈ 6 studs tall, helmet ≈ 1 stud.
-- **Rider is a single static mesh** (no skeleton). For a playable rider, rig it (fal `fal-ai/meshy/rigging`, or Studio's rigging tools), or use it as reference to skin an R15 character; keep helmet/boots as separate accessories so colours stay swappable.
-- **⚠ Logos:** the rider and boots textures carry a stray Fox-Racing-style logo the image model added. Regenerate those two **logo-free** before shipping (quick nano-banana edit), then re-convert.
+- **Rider:** use `rigged/rider_r15.fbx`. Keep helmet/boots as separate accessories so colours stay swappable.
+- **Logos:** the rider texture is cleaned in `rigged/rider_r15.fbx`. The separate `boots.glb` texture still carries the stray logo; it is not used by the game.
 
 ## Wiring into the starter project
-In `robikes/src/client/BikeRenderer.lua`, replace the placeholder `Part`s (`Chassis`, wheels, `Rider`) with these imported **MeshPart**s (keep the same names and local offsets). The physics in `BikePhysics.lua` is independent of the visuals, so nothing else changes.
+The game (`my-version`) wires these in for you: import the two FBX files, name them `RiderR15` and `Bike450`, put them in ReplicatedStorage, and `BikeRenderer` uses them in place of the block bike and rider.
