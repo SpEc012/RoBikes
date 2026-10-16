@@ -89,9 +89,10 @@ function Drivetrain.effectiveThrottle(bike, st, throttleInput, frontShare, antiW
 		local t = math.clamp((h.wheelieMaxRatio - frontShare) / (h.wheelieMaxRatio - h.wheelieMinRatio), 0, 1)
 		th = math.min(th, 1 - t * (1 - h.wheelieThrottle))
 	end
-	-- idle: a minimum throttle [DERIVED for 4-strokes: balances within 60–115 rpm of IdleRPM], faded out
-	-- above IdleRPM so engines whose curves never balance (250 2-stroke) still settle near idle [DESIGN]
-	local idleFloor = e.idleThrottle * math.clamp((e.idleRPM + 400 - rpm) / 400, 0, 1)
+	-- idle governor [DESIGN law, SPEC.md §3 MEAS target: idle settles at IdleRPM ± 20, 2305 for 2300 on the 350XF]:
+	-- the floor is IdleThrottle at IdleRPM and moves by IdleThrottle per 150 rpm of error. A fixed IdleThrottle
+	-- floor balances 60–110 rpm low on the 4-strokes and lets the 250 2-stroke sag to ~1030 rpm.
+	local idleFloor = math.clamp(e.idleThrottle * (1 + (e.idleRPM - rpm) / 150), 0, 1)
 	return math.max(th, idleFloor)
 end
 
